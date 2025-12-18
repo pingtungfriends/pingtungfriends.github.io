@@ -124,7 +124,11 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(246, 241, 227, 0.9), rgba(246, 241, 227, 0.6) 55%, rgba(246, 241, 227, 0.4));
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 255, 255, 0.85) 40%,
+      rgba(255, 255, 255, 0) 100%);
+  z-index: 1;
 }
 
 .lp-hero .hero-content {
@@ -149,15 +153,27 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.lp-hero h1 {
-  font-size: clamp(36px, 5vw, 50px);
-  margin: 0 0 10px;
-  letter-spacing: 0.8px;
+.hero-brand {
+  font-family: var(--serif);
+  font-size: clamp(38px, 6vw, 56px);
+  margin: 0 0 16px;
+  line-height: 1.2;
+  color: var(--ink);
 }
 
-.lp-hero p {
-  margin: 0 0 12px;
-  line-height: 1.7;
+.hero-tagline {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--accent-green);
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+.hero-story {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 500px;
 }
 
 .btn-primary {
