@@ -1,0 +1,74 @@
+{
+  "brands": [
+    {
+      "slug": "green-mango",
+      "name": "綠意芒果工坊",
+      "tagline": "屏東日照，成就香甜芒果乾",
+      "heroWords": ["FLOW", "WITH", "IT"],
+      "origin": "屏東內埔",
+      "story": "低溫烘焙保留果香，與在地小農共製，季節性採收降低浪費。",
+      "heroImage": "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1600&q=80",
+      "cta": { "label": "立即購買", "link": "https://shop.example.com/gm" },
+      "badges": ["產銷履歷", "無添加糖", "友善農法"],
+      "products": [
+        {"id": "gm-001", "name": "日曬芒果乾", "summary": "果肉厚實、低溫烘焙保留纖維", "price": 220, "spec": "120g/包", "image": "https://images.unsplash.com/photo-1611241893603-3c359704e0c3?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-001"},
+        {"id": "gm-002", "name": "情人果脆片", "summary": "酸甜脆口、零添加色素", "price": 180, "spec": "90g/包", "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-002"},
+        {"id": "gm-003", "name": "芒果厚切丁", "summary": "慢火烘烤的果乾丁，適合拌沙拉", "price": 160, "spec": "80g/包", "image": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-003"},
+        {"id": "gm-004", "name": "果香烘焙粉", "summary": "低溫研磨，烘焙與奶昔皆適用", "price": 150, "spec": "60g/罐", "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-004"},
+        {"id": "gm-005", "name": "芒果茶包", "summary": "果香茶包，無咖啡因", "price": 200, "spec": "15 入/盒", "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-005"},
+        {"id": "gm-006", "name": "芒果氣泡飲", "summary": "無添加糖氣泡果飲", "price": 75, "spec": "330ml/瓶", "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-006"},
+        {"id": "gm-007", "name": "果乾禮盒", "summary": "三款果乾組合，送禮自用皆宜", "price": 520, "spec": "3 入組", "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-007"},
+        {"id": "gm-008", "name": "芒果果醬", "summary": "低糖果醬，塗抹與調味皆適合", "price": 230, "spec": "210g/瓶", "image": "https://images.unsplash.com/photo-1478145058460-39f10e56b5e9?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-008"},
+        {"id": "gm-009", "name": "芒果優格杯", "summary": "即食優格，內含果乾顆粒", "price": 95, "spec": "150g/杯", "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-009"},
+        {"id": "gm-010", "name": "芒果冷凍果肉", "summary": "急速冷凍保留風味，適合冰沙", "price": 260, "spec": "500g/袋", "image": "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/gm-010"}
+      ],
+      "videos": [
+        {"title": "品牌故事", "url": "https://www.youtube.com/watch?v=gm_story"},
+        {"title": "低溫烘焙流程", "url": "https://www.youtube.com/watch?v=gm_roast"},
+        {"title": "農友訪談", "url": "https://www.youtube.com/watch?v=gm_farmer"}
+      ],
+      "faq": [
+        {"q": "是否添加糖或防腐劑？", "a": "全系列不添加人工糖與防腐劑，以低溫烘焙保留原味。"},
+        {"q": "保存方式為何？", "a": "未開封常溫陰涼處 6 個月，開封後冷藏並盡早食用。"}
+      ],
+      "social": {"line": "https://line.me/gm", "facebook": "https://facebook.com/gm"},
+      "qrSlug": "gm",
+      "seo": {"title": "綠意芒果工坊｜屏東芒果乾", "description": "日照香甜、低溫烘焙芒果乾與果飲，與在地小農共製。"}
+    },
+    {
+      "slug": "cocoa-harbor",
+      "name": "可可港工坊",
+      "tagline": "海風可可，醇厚回甘",
+      "heroWords": ["COAST", "CACAO", "CRAFT"],
+      "origin": "屏東大武",
+      "story": "小農合作日曬豆，低溫研磨，強調公平貿易與友善海岸。",
+      "heroImage": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80",
+      "cta": { "label": "立即品嚐", "link": "https://shop.example.com/ch" },
+      "badges": ["公平貿易", "單一產區", "海風日曬"],
+      "products": [
+        {"id": "ch-001", "name": "海鹽可可醬", "summary": "低溫研磨，奶油口感", "price": 250, "spec": "180g/瓶", "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-001"},
+        {"id": "ch-002", "name": "脆可可豆碎", "summary": "日曬可可豆烘烤，拌黑糖", "price": 190, "spec": "150g/罐", "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-002"},
+        {"id": "ch-003", "name": "可可粉", "summary": "無糖可可粉，適合烘焙與沖調", "price": 210, "spec": "120g/罐", "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-003"},
+        {"id": "ch-004", "name": "可可豆茶包", "summary": "烘烤豆碎茶包，無咖啡因", "price": 200, "spec": "15 入/盒", "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-004"},
+        {"id": "ch-005", "name": "可可脆餅", "summary": "酥脆餅乾，使用在地小麥", "price": 160, "spec": "10 片/盒", "image": "https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-005"},
+        {"id": "ch-006", "name": "可可牛奶糖", "summary": "低糖配方，入口即化", "price": 120, "spec": "12 顆/袋", "image": "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-006"},
+        {"id": "ch-007", "name": "冷萃可可飲", "summary": "海風日曬豆冷萃，微氣泡感", "price": 85, "spec": "330ml/瓶", "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-007"},
+        {"id": "ch-008", "name": "可可果醬", "summary": "添加海鹽提升層次", "price": 230, "spec": "210g/瓶", "image": "https://images.unsplash.com/photo-1478145058460-39f10e56b5e9?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-008"},
+        {"id": "ch-009", "name": "可可能量棒", "summary": "燕麥、堅果與可可碎", "price": 75, "spec": "50g/條", "image": "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-009"},
+        {"id": "ch-010", "name": "可可豆禮盒", "summary": "單一產區豆與烘焙豆碎組合", "price": 620, "spec": "4 入組", "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=80", "link": "https://shop.example.com/ch-010"}
+      ],
+      "videos": [
+        {"title": "工坊巡禮", "url": "https://www.youtube.com/watch?v=ch_factory"},
+        {"title": "可可研磨", "url": "https://www.youtube.com/watch?v=ch_roast"},
+        {"title": "海岸故事", "url": "https://www.youtube.com/watch?v=ch_coast"}
+      ],
+      "faq": [
+        {"q": "是否含乳製品？", "a": "部分產品含奶油，素食者可挑選標註純素的品項。"},
+        {"q": "可否客製禮盒？", "a": "可，請透過 CTA 連結或 Line 聯繫我們。"}
+      ],
+      "social": {"line": "https://line.me/ch", "facebook": "https://facebook.com/ch"},
+      "qrSlug": "ch",
+      "seo": {"title": "可可港工坊｜海風醇厚可可", "description": "屏東大武海風日曬可可，公平貿易、單一產區的可可醬與豆製品。"}
+    }
+  ]
+}
