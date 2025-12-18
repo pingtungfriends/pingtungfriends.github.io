@@ -4,109 +4,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>品牌列表｜示範</title>
+  <title>屏東友鄰 Pingtung Friends | 品牌地圖</title>
+  <meta name="description" content="探索屏東在地品牌，從產地到餐桌的自然風味。">
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Outfit:wght@300;400;600&display=swap"
+    rel="stylesheet">
 </head>
 
-<body data-page="landing">
+<body data-page="index">
   <div class="page-bg"></div>
+
   <div class="page-shell">
     <header class="lp-nav">
       <div class="logo">Pingtung Friends</div>
       <nav>
-        <a href="#" class="active">首頁</a>
-        <a href="#story">故事</a>
-        <a href="#products">產品</a>
-        <a href="#passport">護照</a>
-        <a href="#map">據點</a>
+        <a href="index.html" class="active">品牌地圖</a>
+        <a href="#">關於計畫</a>
       </nav>
-      <a class="ghost-btn hero-cta" href="#" target="_blank" rel="noopener">立即行動</a>
+      <a class="ghost-btn" href="https://github.com/pingtungfriends" target="_blank">計畫原始碼</a>
     </header>
 
-    <section class="lp-hero">
-      <div class="hero-bg" aria-hidden="true"></div>
+    <section class="directory-hero">
       <div class="hero-content">
-        <div class="hero-badges"></div>
-        <h1 class="hero-brand">品牌名稱</h1>
-        <p class="hero-tagline">品牌標語</p>
-        <p class="hero-story">品牌故事簡述</p>
-        <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">立即品嚐</a>
-      </div>
-      <div class="hero-glass">
-        <div class="hero-big-text"></div>
+        <h1 class="premium-title">屏東友鄰<span>Pingtung Friends</span></h1>
+        <p class="premium-subtitle">由在地的風、太陽與泥土孕育出的 8 個動人故事</p>
       </div>
     </section>
 
-    <section id="story" class="lp-section story-section">
+    <section class="brand-directory">
       <div class="section-head">
-        <h2>OUR STORY</h2>
-        <p class="small">在地風土 · 共好加工 · 自然風味</p>
+        <h2>探索品牌</h2>
+        <p class="small">點擊進入品牌專屬 Landing Page</p>
       </div>
-      <div class="story-grid">
-        <p class="story-text"></p>
-        <div class="story-card">
-          <img class="story-img" alt="story" />
-          <div class="story-note">產地風景 / 品牌日常</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="products" class="lp-section recipes-section">
-      <div class="section-head">
-        <h2>RECIPES / PRODUCTS</h2>
-        <p class="small">精選熱銷，體驗屏東香氣</p>
-      </div>
-      <div class="product-grid"></div>
-    </section>
-
-    <section id="passport" class="lp-section passport-section">
-      <div class="section-head">
-        <h2>品牌護照</h2>
-        <p class="small">掃碼收藏，解鎖線上導覽與小禮</p>
-      </div>
-      <div class="passport-card">
-        <div>
-          <p>加入品牌護照，取得 QRcode、優惠與新產品通知。</p>
-          <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">領取護照</a>
-        </div>
-        <img class="passport-img" alt="passport" />
-      </div>
-    </section>
-
-    <section id="map" class="lp-section map-section">
-      <div class="section-head">
-        <h2>MAP · 據點</h2>
-        <p class="small">線下合作通路 / 期間快閃</p>
-      </div>
-      <div class="map-grid">
-        <div class="map-spot">
-          <div class="map-pin">屏東</div>
-          <p>可到合作販賣機或友善店家購買。</p>
-        </div>
-        <div class="map-list">
-          <div class="map-item">小農市集 · 週末限定</div>
-          <div class="map-item">合作咖啡廳 · 品牌專區</div>
-        </div>
+      <div id="brand-grid" class="brand-grid">
+        <!-- Brands will be loaded here -->
+        <div class="loading-state">載入品牌中...</div>
       </div>
     </section>
 
     <footer class="lp-footer">
-      <div class="footer-banner">
-        <div>
-          <div class="footer-badges hero-badges"></div>
-          <h3 class="footer-title">屏東風味，隨時可得</h3>
-          <p class="footer-text">掃碼或點擊 CTA 立即品嚐在地加工好物。</p>
-        </div>
-        <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">立刻前往</a>
-      </div>
       <div class="footer-nav">
-        <span>Pingtung Friends</span>
-        <a href="#">品牌</a>
-        <a href="#">產品</a>
-        <a href="#">聯絡</a>
+        <span>© 2025 Pingtung Friends</span>
+        <a href="#">隱私權政策</a>
+        <a href="#">聯絡我們</a>
       </div>
     </footer>
   </div>
+
   <script src="app.js"></script>
 </body>
 

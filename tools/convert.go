@@ -103,12 +103,13 @@ func main() {
 
 	for i := 1; i < len(rows); i++ {
 		row := rows[i]
-		if len(row) == 0 || getVal(row, headers, "slug") == "" {
+		slug := getVal(row, headers, "slug")
+		if len(row) == 0 || slug == "" || strings.HasPrefix(slug, "demo") {
 			continue
 		}
 
 		brand := Brand{
-			Slug:      getVal(row, headers, "slug"),
+			Slug:      slug,
 			Name:      getVal(row, headers, "品牌名稱"),
 			Tagline:   getVal(row, headers, "標語"),
 			Origin:    getVal(row, headers, "產地"),
@@ -198,7 +199,43 @@ func main() {
 		log.Fatalf("無法寫入檔案: %v", err)
 	}
 
-	fmt.Printf("成功轉換 %d 個品牌資料至 %s\n", len(brands), outputFile)
+	// Generate Directories for each brand
+	fmt.Println("正在生成品牌專屬資料夾...")
+	templatePath := "brand.html"
+	templateContent, err := os.ReadFile(templatePath)
+	if err != nil {
+		log.Fatalf("無法讀取模板檔 %s: %v", templatePath, err)
+	}
+
+	for _, brand := range brands {
+		if brand.Slug == "" {
+			continue
+		}
+		brandDir := fmt.Sprintf("brands/%s", brand.Slug)
+		err := os.MkdirAll(brandDir, 0755)
+		if err != nil {
+			log.Printf("無法建立資料夾 %s: %v", brandDir, err)
+			continue
+		}
+
+		// Adjust paths in the template to work from the subdirectory
+		// For example, style.css -> ../../style.css
+		// But a cleaner way is to use absolute-like paths or replace them specifically
+		html := string(templateContent)
+		html = strings.ReplaceAll(html, `href="style.css"`, `href="../../style.css"`)
+		html = strings.ReplaceAll(html, `src="app.js"`, `src="../../app.js"`)
+		html = strings.ReplaceAll(html, `href="index.html"`, `href="../../index.html"`)
+
+		indexPath := fmt.Sprintf("%s/index.html", brandDir)
+		err = os.WriteFile(indexPath, []byte(html), 0644)
+		if err != nil {
+			log.Printf("無法寫入品牌頁 %s: %v", indexPath, err)
+		} else {
+			fmt.Printf("  -> 已生成: %s\n", indexPath)
+		}
+	}
+
+	fmt.Printf("成功轉換 %d 個品牌資料至 %s 並生成專屬頁面\n", len(brands), outputFile)
 }
 
 func getVal(row []string, headers map[string]int, names ...string) string {
