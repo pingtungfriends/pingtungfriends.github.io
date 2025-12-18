@@ -4,14 +4,10 @@
       "slug": "green-mango",
       "name": "綠意芒果工坊",
       "tagline": "屏東日照，成就香甜芒果乾",
-      "heroWords": [
-        "FLOW",
-        "WITH",
-        "VIBE"
-      ],
+      "heroWords": null,
       "origin": "屏東內埔",
       "story": "低溫烘焙保留果香，與在地小農共製。",
-      "heroImage": "public/assets/green-mango/hero.png",
+      "heroImage": "https://example.com/assets/green-mango/hero.jpg",
       "cta": {
         "label": "立即購買",
         "link": "https://shop.example.com/gm"
@@ -27,7 +23,7 @@
           "summary": "果肉厚實、低溫烘焙保留纖維",
           "price": 220,
           "spec": "120g/包",
-          "image": "https://images.unsplash.com/photo-1611241893603-3c359704e0c3?auto=format&fit=crop&w=900&q=80",
+          "image": "https://example.com/assets/green-mango/prod-dry.jpg",
           "link": "https://shop.example.com/gm-001"
         },
         {
@@ -36,7 +32,7 @@
           "summary": "酸甜脆口、零添加色素",
           "price": 180,
           "spec": "90g/包",
-          "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80",
+          "image": "https://example.com/assets/green-mango/prod-chip.jpg",
           "link": "https://shop.example.com/gm-002"
         }
       ],
@@ -61,14 +57,10 @@
       "slug": "cocoa-harbor",
       "name": "可可港工坊",
       "tagline": "海風可可，醇厚回甘",
-      "heroWords": [
-        "SEA",
-        "SOUL",
-        "SALT"
-      ],
+      "heroWords": null,
       "origin": "屏東大武",
       "story": "小農合作日曬豆，低溫烘焙可可醬。",
-      "heroImage": "public/assets/cocoa-harbor/hero.png",
+      "heroImage": "https://example.com/assets/cocoa-harbor/hero.jpg",
       "cta": {
         "label": "立即品嚐",
         "link": "https://shop.example.com/ch"
@@ -84,7 +76,7 @@
           "summary": "低溫研磨，奶油口感",
           "price": 250,
           "spec": "180g/瓶",
-          "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
+          "image": "https://example.com/assets/cocoa-harbor/prod-spread.jpg",
           "link": "https://shop.example.com/ch-001"
         },
         {
@@ -93,7 +85,7 @@
           "summary": "日曬可可豆烘烤，拌黑糖",
           "price": 190,
           "spec": "150g/罐",
-          "image": "https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=900&q=80",
+          "image": "https://example.com/assets/cocoa-harbor/prod-nibs.jpg",
           "link": "https://shop.example.com/ch-002"
         }
       ],

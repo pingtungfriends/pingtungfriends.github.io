@@ -51,9 +51,9 @@
 }
 ```
 
-## 資料蒐集與轉換（ODS 表單）
-- 範例檔：`docs/sample-brands.ods`（sheet 名稱 `brands`），欄位含 slug、品牌名稱、標語、Hero 巨字標語（例：FLOW|WITH|IT）、產地、品牌故事、主圖 URL、CTA 文字/連結、產品 1/2（名稱/摘要/價格/規格/圖片/連結）、影片標題/網址、徽章 1/2、SEO 標題/描述。
-- 交付流程：你填好 ODS / CSV 後，使用 Go 轉換程式讀取試算表，輸出 `data/brands.json`，並同步下載圖片到 `public/assets/<slug>/`。
+## 資料蒐集與轉換（XLSX 表單）
+- 範例檔：`docs/brands.xlsx`（sheet 名稱 `brands`），欄位含 slug、品牌名稱、標語、Hero 巨字標語（例：FLOW|WITH|IT）、產地、品牌故事、主圖 URL、CTA 文字/連結、產品 1/2（名稱/摘要/價格/規格/圖片/連結）、影片標題/網址、徽章 1/2、SEO 標題/描述。
+- 交付流程：你填好 XLSX 後，使用 Go 轉換程式讀取試算表，輸出 `data/brands.json`，並同步下載圖片到 `public/assets/<slug>/`。
 - 轉換工具可以做欄位驗證（必填 CTA、產品至少 10 項等）並自動補上 UTM。
 
 ## 檔案與模板結構 (Vanilla JS + HTML)
@@ -65,7 +65,7 @@
 
 ## 生成流程（新增品牌）
 1) 收集素材：hero 風景照、產品照 >=10、徽章/認證、短影片 3+、CTA 連結。  
-2) 更新 `docs/sample-brands.ods`。
+2) 更新 `docs/brands.xlsx`。
 3) 執行 `go run tools/convert.go` 更新 `data/brands.json`。
 4) 將素材放置於指定路徑（或由腳本自動下載）。
 5) 驗收：檢查手機端 CTA 浮動、影片播放事件、產品卡 CTA 正常。
@@ -94,7 +94,7 @@
 
 ## 範例靜態頁
 - 位置：根目錄 `index.html`（品牌列表）與 `brand.html?slug=<品牌 slug>`（單品牌頁）。  
-- 資料：`data/brands.json`，直接讀取並渲染；可透過前述 ODS 轉換腳本自動生成。  
+- 資料：`data/brands.json`，直接讀取並渲染；可透過前述 XLSX 轉換腳本自動生成。  
 - 風格：自然背景、CTA 浮動，展示 Hero、產品列表、影片、FAQ。  
 - 使用方式：啟動本機伺服器後瀏覽 `http://localhost:8000/index.html`，點品牌卡片即可查看示範一頁式。  
 - 海浪 Hero 風格示範：`hero-concept.html` 搭配 `hero-concept.css`，採用 Noto Sans TC、背景圖覆疊與字體背景裁切（background-clip）呈現文字與圖片融合效果，可作為第一屏視覺參考。  
@@ -104,8 +104,8 @@
 
 ## 開發路線圖 (Current Roadmap)
 - [x] **Phase 1: 基礎自動化 [DONE]**
-  - 實作 Go 轉換程式 `tools/convert.go`，成功連結 `sample-brands.ods` 與 `brands.json`。
-  - 支援 `xlsx` 與 `go-ods` 套件進行資料讀取。
+  - 實作 Go 轉換程式 `tools/convert.go`，成功連結 `brands.xlsx` 與 `brands.json`。
+  - 使用 `excelize` 套件進行資料讀取。
 - [ ] **Phase 2: 自然風格視覺強化 [進行中]**
   - 使用 AI 生成高品質農地與工坊景觀圖 (Done)。
   - 引入紙張紋理 (Natural Paper Texture) 與植物插圖裝飾。

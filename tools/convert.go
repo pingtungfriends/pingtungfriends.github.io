@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/AlexJarrah/go-ods"
+	"github.com/xuri/excelize/v2"
 )
 
 type Brand struct {
@@ -65,33 +65,34 @@ type SEO struct {
 }
 
 func main() {
-	odsFile := "docs/sample-brands.ods"
+	xlsxFile := "docs/brands.xlsx"
 	outputFile := "data/brands.json"
 
-	doc, closer, err := ods.Read(odsFile)
+	f, err := excelize.OpenFile(xlsxFile)
 	if err != nil {
-		log.Fatalf("無法讀取 ODS 檔案: %v", err)
+		log.Fatalf("無法讀取 XLSX 檔案: %v", err)
 	}
-	defer closer.Close()
+	defer f.Close()
 
-	tables := doc.Content.Body.Spreadsheet.Table
-	if len(tables) == 0 {
-		log.Fatal("ODS 檔案中沒有工作表")
+	sheets := f.GetSheetList()
+	if len(sheets) == 0 {
+		log.Fatal("XLSX 檔案中沒有工作表")
+	}
+	sheetName := sheets[0]
+
+	rows, err := f.GetRows(sheetName)
+	if err != nil {
+		log.Fatalf("無法讀取工作表內容: %v", err)
 	}
 
-	sheet := tables[0]
-	if len(sheet.TableRow) < 2 {
+	if len(rows) < 2 {
 		log.Fatal("工作表中沒有足夠的資料列（需包含標題列與至少一列資料）")
 	}
 
 	headers := make(map[string]int)
 	fmt.Println("正在讀取標題列...")
-	for i, cell := range sheet.TableRow[0].TableCell {
-		val := cell.Value
-		if val == "" {
-			val = cell.P
-		}
-		name := strings.ToLower(strings.TrimSpace(val))
+	for i, cell := range rows[0] {
+		name := strings.ToLower(strings.TrimSpace(cell))
 		if name != "" {
 			fmt.Printf("找到標題: [%s] (index: %d)\n", name, i)
 			headers[name] = i
@@ -100,9 +101,9 @@ func main() {
 
 	var brands []Brand
 
-	for i := 1; i < len(sheet.TableRow); i++ {
-		row := sheet.TableRow[i]
-		if len(row.TableCell) == 0 || getVal(row, headers, "slug") == "" {
+	for i := 1; i < len(rows); i++ {
+		row := rows[i]
+		if len(row) == 0 || getVal(row, headers, "slug") == "" {
 			continue
 		}
 
@@ -200,17 +201,13 @@ func main() {
 	fmt.Printf("成功轉換 %d 個品牌資料至 %s\n", len(brands), outputFile)
 }
 
-func getVal(row ods.TableRow, headers map[string]int, names ...string) string {
+func getVal(row []string, headers map[string]int, names ...string) string {
 	for _, name := range names {
 		idx, ok := headers[strings.ToLower(name)]
-		if !ok || idx >= len(row.TableCell) {
+		if !ok || idx >= len(row) {
 			continue
 		}
-		cell := row.TableCell[idx]
-		val := cell.Value
-		if val == "" {
-			val = cell.P
-		}
+		val := row[idx]
 		if trimmed := strings.TrimSpace(val); trimmed != "" {
 			return trimmed
 		}
