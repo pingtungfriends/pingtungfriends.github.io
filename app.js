@@ -54,7 +54,7 @@ function createBrandCard(brand) {
 
   div.innerHTML = `
     <div class="brand-image">
-      <img src="${getAssetPath(brand.heroImage)}" alt="${brand.name}" loading="lazy" />
+      <img src="${getAssetPath(brand.logo || brand.heroImage)}" alt="${brand.name}" loading="lazy" />
       <div class="brand-overlay">
         <span class="view-tag">進入品牌</span>
       </div>
@@ -190,6 +190,19 @@ async function initBrand() {
 
   console.log('Rendering brand:', brand.name);
   document.title = brand.seo?.title || `${brand.name || '品牌頁'} | Pingtung Friends`;
+
+  // Render Logo
+  const logoImg = document.getElementById('brand-logo');
+  const logoText = document.getElementById('brand-name-text');
+  if (logoImg && brand.logo) {
+    logoImg.src = getAssetPath(brand.logo);
+    logoImg.alt = brand.name || '';
+    logoImg.style.display = 'block';
+    if (logoText) logoText.style.display = 'none';
+  } else if (logoText && brand.name) {
+    logoText.textContent = brand.name;
+  }
+
   renderHero(brand);
   renderStory(brand);
   renderProducts(brand);

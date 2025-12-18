@@ -14,6 +14,7 @@ import (
 type Brand struct {
 	Slug      string    `json:"slug"`
 	Name      string    `json:"name"`
+	Logo      string    `json:"logo"`
 	Tagline   string    `json:"tagline"`
 	HeroWords []string  `json:"heroWords"`
 	Origin    string    `json:"origin"`
@@ -85,8 +86,8 @@ func main() {
 		log.Fatalf("無法讀取工作表內容: %v", err)
 	}
 
-	if len(rows) < 2 {
-		log.Fatal("工作表中沒有足夠的資料列（需包含標題列與至少一列資料）")
+	if len(rows) < 1 {
+		log.Fatal("工作表為空")
 	}
 
 	headers := make(map[string]int)
@@ -108,27 +109,59 @@ func main() {
 			continue
 		}
 
-		// Helper to clean paths
-		cleanPath := func(p string) string {
-			p = strings.TrimSpace(p)
-			for strings.HasPrefix(p, "../") {
-				p = strings.TrimPrefix(p, "../")
+		// Helper to normalize filenames (convert full-width to half-width)
+		normalizeFilename := func(s string) string {
+			r := strings.NewReplacer(
+				"０", "0", "１", "1", "２", "2", "３", "3", "４", "4",
+				"５", "5", "６", "6", "７", "7", "８", "8", "９", "9",
+				"＿", "_", "－", "-", "．", ".", "　", " ",
+			)
+			return r.Replace(s)
+		}
+
+		// Helper to resolve asset paths
+		resolveAssetPath := func(raw string) string {
+			raw = strings.TrimSpace(raw)
+			if raw == "" {
+				return ""
 			}
-			return p
+
+			// Normalize full-width characters
+			raw = normalizeFilename(raw)
+
+			// If it's already a full URL or starts from root, keep it as is
+			if strings.HasPrefix(raw, "http") || strings.HasPrefix(raw, "//") || strings.HasPrefix(raw, "/") || strings.HasPrefix(raw, "data:") {
+				return raw
+			}
+
+			// Remove any legacy relative markers first
+			cleaned := raw
+			for strings.HasPrefix(cleaned, "../") {
+				cleaned = strings.TrimPrefix(cleaned, "../")
+			}
+
+			// If it ALREADY contains public/assets (even after cleaning), return it directly
+			if strings.HasPrefix(cleaned, "public/assets") {
+				return cleaned
+			}
+
+			// Prepend the standard path
+			return fmt.Sprintf("public/assets/%s/%s", slug, cleaned)
 		}
 
 		brand := Brand{
 			Slug:      slug,
 			Name:      getVal(row, headers, "品牌名稱"),
+			Logo:      resolveAssetPath(getVal(row, headers, "logo")),
 			Tagline:   getVal(row, headers, "標語"),
 			Origin:    getVal(row, headers, "產地"),
 			Story:     getVal(row, headers, "品牌故事"),
-			HeroImage: cleanPath(getVal(row, headers, "主圖圖片url", "主圖 url")),
+			HeroImage: resolveAssetPath(getVal(row, headers, "主圖圖片url", "主圖 url")),
 			QRSlug:    getVal(row, headers, "qrslug", "qr slug"),
 		}
 
 		// Hero Words
-		words := getVal(row, headers, "hero 巨字標語", "hero標語")
+		words := getVal(row, headers, "hero 巨字標語", "hero標語", "hero巨字標語（以 | 分隔）")
 		if words != "" {
 			brand.HeroWords = strings.Split(words, "|")
 		}
@@ -155,7 +188,7 @@ func main() {
 			}
 			priceStr := getVal(row, headers, fmt.Sprintf("產品 %d 價格", k), fmt.Sprintf("產品%d價格", k))
 			price, _ := strconv.Atoi(priceStr)
-			imgUrl := cleanPath(getVal(row, headers, fmt.Sprintf("產品 %d 圖片url", k), fmt.Sprintf("產品%d圖片url", k), fmt.Sprintf("產品 %d 圖片", k), fmt.Sprintf("產品%d圖片", k)))
+			imgUrl := resolveAssetPath(getVal(row, headers, fmt.Sprintf("產品 %d 圖片url", k), fmt.Sprintf("產品%d圖片url", k), fmt.Sprintf("產品 %d 圖片", k), fmt.Sprintf("產品%d圖片", k)))
 			brand.Products = append(brand.Products, Product{
 				ID:      fmt.Sprintf("%s-%03d", brand.Slug, k),
 				Name:    pName,
@@ -244,7 +277,57 @@ func main() {
 		html = strings.ReplaceAll(html, `<p class="hero-tagline"></p>`, fmt.Sprintf(`<p class="hero-tagline">%s</p>`, brand.Tagline))
 		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
 		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
-		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.SEO.Title))
+		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.Name))
+
+		// Logo SSG Injection
+		if brand.Logo != "" {
+			logoURL := "../../" + brand.Logo
+			html = strings.ReplaceAll(html, `id="brand-logo" src="" alt="" style="display:none;`, fmt.Sprintf(`id="brand-logo" src="%s" alt="%s" style="display:block;`, logoURL, brand.Name))
+			html = strings.ReplaceAll(html, `id="brand-name-text">Pingtung Friends</span>`, fmt.Sprintf(`id="brand-name-text" style="display:none;">%s</span>`, brand.Name))
+		} else if brand.Name != "" {
+			html = strings.ReplaceAll(html, `id="brand-name-text">Pingtung Friends</span>`, fmt.Sprintf(`id="brand-name-text">%s</span>`, brand.Name))
+		}
+
+		// HeroWords SSG Injection
+		if len(brand.HeroWords) > 0 {
+			var wordsHTML strings.Builder
+			for _, w := range brand.HeroWords {
+				wordsHTML.WriteString(fmt.Sprintf("<span>%s</span>", w))
+			}
+			html = strings.ReplaceAll(html, `<div class="hero-big-text"></div>`, fmt.Sprintf(`<div class="hero-big-text">%s</div>`, wordsHTML.String()))
+		}
+
+		// Products SSG Injection
+		if len(brand.Products) > 0 {
+			var prodHTML strings.Builder
+			for _, p := range brand.Products {
+				img := "../../" + p.Image
+				prodHTML.WriteString(fmt.Sprintf(`
+					<div class="card">
+						<img src="%s" alt="%s" loading="lazy" />
+						<div class="card-body">
+							<h3>%s</h3>
+							<p class="summary">%s</p>
+							<p class="price">$%d · %s</p>
+							<a class="btn-primary" href="%s" target="_blank" rel="noopener">立即購買</a>
+						</div>
+					</div>`, img, p.Name, p.Name, p.Summary, p.Price, p.Spec, p.Link))
+			}
+			html = strings.ReplaceAll(html, `<div class="product-grid"></div>`, fmt.Sprintf(`<div class="product-grid">%s</div>`, prodHTML.String()))
+		}
+
+		// Videos SSG Injection
+		if len(brand.Videos) > 0 {
+			var videoHTML strings.Builder
+			for _, v := range brand.Videos {
+				videoHTML.WriteString(fmt.Sprintf(`
+					<div class="video-item">
+						<div>%s</div>
+						<a href="%s" target="_blank" rel="noopener">立即播放</a>
+					</div>`, v.Title, v.URL))
+			}
+			html = strings.ReplaceAll(html, `<div class="video-list"></div>`, fmt.Sprintf(`<div class="video-list">%s</div>`, videoHTML.String()))
+		}
 
 		indexPath := fmt.Sprintf("%s/index.html", brandDir)
 		err = os.WriteFile(indexPath, []byte(html), 0644)
