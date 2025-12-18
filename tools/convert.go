@@ -108,13 +108,22 @@ func main() {
 			continue
 		}
 
+		// Helper to clean paths
+		cleanPath := func(p string) string {
+			p = strings.TrimSpace(p)
+			for strings.HasPrefix(p, "../") {
+				p = strings.TrimPrefix(p, "../")
+			}
+			return p
+		}
+
 		brand := Brand{
 			Slug:      slug,
 			Name:      getVal(row, headers, "品牌名稱"),
 			Tagline:   getVal(row, headers, "標語"),
 			Origin:    getVal(row, headers, "產地"),
 			Story:     getVal(row, headers, "品牌故事"),
-			HeroImage: getVal(row, headers, "主圖圖片url", "主圖 url"),
+			HeroImage: cleanPath(getVal(row, headers, "主圖圖片url", "主圖 url")),
 			QRSlug:    getVal(row, headers, "qrslug", "qr slug"),
 		}
 
@@ -146,15 +155,21 @@ func main() {
 			}
 			priceStr := getVal(row, headers, fmt.Sprintf("產品 %d 價格", k), fmt.Sprintf("產品%d價格", k))
 			price, _ := strconv.Atoi(priceStr)
+			imgUrl := cleanPath(getVal(row, headers, fmt.Sprintf("產品 %d 圖片url", k), fmt.Sprintf("產品%d圖片url", k), fmt.Sprintf("產品 %d 圖片", k), fmt.Sprintf("產品%d圖片", k)))
 			brand.Products = append(brand.Products, Product{
 				ID:      fmt.Sprintf("%s-%03d", brand.Slug, k),
 				Name:    pName,
 				Summary: getVal(row, headers, fmt.Sprintf("產品 %d 摘要", k), fmt.Sprintf("產品%d摘要", k)),
 				Price:   price,
 				Spec:    getVal(row, headers, fmt.Sprintf("產品 %d 規格", k), fmt.Sprintf("產品%d規格", k)),
-				Image:   getVal(row, headers, fmt.Sprintf("產品 %d 圖片url", k), fmt.Sprintf("產品%d圖片url", k), fmt.Sprintf("產品 %d 圖片", k), fmt.Sprintf("產品%d圖片", k)),
+				Image:   imgUrl,
 				Link:    getVal(row, headers, fmt.Sprintf("產品 %d 連結", k), fmt.Sprintf("產品%d連結", k)),
 			})
+		}
+
+		// Fallback HeroImage if empty
+		if brand.HeroImage == "" && len(brand.Products) > 0 {
+			brand.HeroImage = brand.Products[0].Image
 		}
 
 		// Videos
@@ -219,12 +234,17 @@ func main() {
 		}
 
 		// Adjust paths in the template to work from the subdirectory
-		// For example, style.css -> ../../style.css
-		// But a cleaner way is to use absolute-like paths or replace them specifically
 		html := string(templateContent)
 		html = strings.ReplaceAll(html, `href="style.css"`, `href="../../style.css"`)
 		html = strings.ReplaceAll(html, `src="app.js"`, `src="../../app.js"`)
 		html = strings.ReplaceAll(html, `href="index.html"`, `href="../../index.html"`)
+
+		// Basic SSG Injection
+		html = strings.ReplaceAll(html, `<h1 class="hero-brand"></h1>`, fmt.Sprintf(`<h1 class="hero-brand">%s</h1>`, brand.Name))
+		html = strings.ReplaceAll(html, `<p class="hero-tagline"></p>`, fmt.Sprintf(`<p class="hero-tagline">%s</p>`, brand.Tagline))
+		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
+		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
+		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.SEO.Title))
 
 		indexPath := fmt.Sprintf("%s/index.html", brandDir)
 		err = os.WriteFile(indexPath, []byte(html), 0644)

@@ -7,7 +7,7 @@
       "heroWords": null,
       "origin": "屏東內埔鄉",
       "story": "從社會照顧出發的隘寮社區發展協會，正致力於將隘寮的人、文、地、產、景，打造農村魅力社區！",
-      "heroImage": "",
+      "heroImage": "public/assets/ailiao/B_１_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -20,7 +20,7 @@
           "summary": "止癢、消腫、蚊蟲咬傷",
           "price": 200,
           "spec": "30g/罐",
-          "image": "",
+          "image": "public/assets/ailiao/B_１_1.png",
           "link": ""
         },
         {
@@ -29,7 +29,7 @@
           "summary": "純天然植物精華，有效防護蚊蟲叮咬，擁抱自然。",
           "price": 250,
           "spec": "24入/包",
-          "image": "",
+          "image": "public/assets/ailiao/B_１_２.png",
           "link": ""
         }
       ],
@@ -57,7 +57,7 @@
       "heroWords": null,
       "origin": "屏東枋山鄉",
       "story": "協會積極推動社區產業發展，例如結合地理特色和人文風情，發展具有在地特色的經濟活動，例如結合楓港調民謠的文創產品等。",
-      "heroImage": "",
+      "heroImage": "public/assets/fenggang/B_２_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -70,7 +70,7 @@
           "summary": "落山風下成長的洋蔥製成，保留鮮甜原味，風味獨具。",
           "price": 70,
           "spec": "40g/罐",
-          "image": "",
+          "image": "public/assets/fenggang/B_２_1.png",
           "link": ""
         },
         {
@@ -79,7 +79,7 @@
           "summary": "海風加持的在欉黃愛文芒果，24小時二次烘焙製成，香氣濃郁撲鼻。",
           "price": 160,
           "spec": "100g/罐",
-          "image": "",
+          "image": "public/assets/fenggang/B_２_２.png",
           "link": ""
         }
       ],
@@ -107,7 +107,7 @@
       "heroWords": null,
       "origin": "屏東枋寮鄉",
       "story": "坐擁豐富海洋的環境，提供最新鮮海鮮的口感。我們致力推廣三漁文化—食漁、樂漁、慢漁，也鼓勵訪客親身參與各式漁業活動。從走訪社區到品嚐在地美食，邀請您一同共享快樂、悠閒的「慢漁」時光。",
-      "heroImage": "",
+      "heroImage": "public/assets/xinlong/B_３_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -120,7 +120,7 @@
           "summary": "4年以上飼育的龍膽石斑，慢熬釋放膠原蛋白與鮮甜，隔水加熱即可輕鬆享用。",
           "price": 300,
           "spec": "580g/包",
-          "image": "",
+          "image": "public/assets/xinlong/B_３_1.png",
           "link": ""
         },
         {
@@ -129,7 +129,7 @@
           "summary": "高蛋白、低脂肪，營養豐富且口感細膩的滋補海鮮湯品。",
           "price": 150,
           "spec": "290g/包",
-          "image": "",
+          "image": "public/assets/xinlong/B_３_２.png",
           "link": ""
         }
       ],
@@ -157,7 +157,7 @@
       "heroWords": null,
       "origin": "屏東萬巒鄉",
       "story": "成德社區是屏東萬巒的傳統農業村莊，居民世代以一級產業為生，樂天知命、安於樸實。居民齊心改善環境、保存客家文化、推動產業行銷，打造「安居樂業」的未來願景。",
-      "heroImage": "",
+      "heroImage": "public/assets/chengde/B_４_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -170,7 +170,7 @@
           "summary": "在地香檬結合杏仁片，酸香酥脆、風味獨特，健康又具地方特色的手作零食。",
           "price": 200,
           "spec": "120g/罐",
-          "image": "",
+          "image": "public/assets/chengde/B_４_1.png",
           "link": ""
         },
         {
@@ -179,7 +179,7 @@
           "summary": "可可豆結合香檬發酵，果香巧克力交融，口感滑順豐富，創意甜點抹醬首選。",
           "price": 400,
           "spec": "200g/罐",
-          "image": "",
+          "image": "public/assets/chengde/B_４_２.png",
           "link": ""
         }
       ],
@@ -207,7 +207,7 @@
       "heroWords": null,
       "origin": "屏東萬巒鄉",
       "story": "赤山位於大武山山腳下的偏遠村落，鮮少人知的一個鄉下地方，因此，期望讓赤山社區有不一樣的樣貌煥然一新。",
-      "heroImage": "",
+      "heroImage": "public/assets/chishan/B_５_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -220,7 +220,7 @@
           "summary": "嚴選大武山金鑽鳳梨，無加糖保留天然香甜，與赤山小農共創純粹風味。",
           "price": 150,
           "spec": "120g/包",
-          "image": "",
+          "image": "public/assets/chishan/B_５_1.png",
           "link": ""
         },
         {
@@ -229,7 +229,7 @@
           "summary": "金鑽鳳梨萃取搭配植物精華，溫和清潔滋潤，打造清爽不黏膩的洗面保養體驗。",
           "price": 230,
           "spec": "150ml/瓶",
-          "image": "",
+          "image": "public/assets/chishan/B_５_２.png",
           "link": ""
         }
       ],
@@ -257,7 +257,7 @@
       "heroWords": null,
       "origin": "屏東萬丹鄉",
       "story": "萬丹鄉位於屏東平原南部，土地平闊，地質肥沃，水利充足，人民富裕，在本縣是生活水準頗高的地方，地形主要以平原為主，肥沃的土壤和豐沛的地下水源，使本鄉成為屏東縣境內的農產之鄉",
-      "heroImage": "",
+      "heroImage": "public/assets/wandan/B_6_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -270,7 +270,7 @@
           "summary": "嚴選台灣萬丹紅豆泥，非基改無添加，安全健康，風味濃郁純粹。",
           "price": 38,
           "spec": "300ml/罐",
-          "image": "",
+          "image": "public/assets/wandan/B_6_1.png",
           "link": ""
         },
         {
@@ -279,7 +279,7 @@
           "summary": "富膳食纖維與花青素及多種微量元素，紅豆黑米香濃甜綿，濃稠鬆軟，冰熱飲皆適宜。",
           "price": 38,
           "spec": "250g/罐",
-          "image": "",
+          "image": "public/assets/wandan/B_6_２.png",
           "link": ""
         }
       ],
@@ -307,7 +307,7 @@
       "heroWords": null,
       "origin": "屏東市",
       "story": "屏東縣，台灣國境之南，境內氣候宜人四季如春，是以農業及觀光為發展主力的大縣，北與高雄市為界，地處熱帶地區，富有濃厚熱帶風情。地方農產豐富。",
-      "heroImage": "",
+      "heroImage": "public/assets/pingtung/B_7_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -320,7 +320,7 @@
           "summary": "紅豆顆粒飽滿細緻綿密，傳統工法製成，甜度適中，展現道地古早味。",
           "price": 45,
           "spec": "320g/罐",
-          "image": "",
+          "image": "public/assets/pingtung/B_7_1.png",
           "link": ""
         },
         {
@@ -329,7 +329,7 @@
           "summary": "高雄七號黑豆，富植物蛋白與維生素，口感Q彈，古法熬煮，拆封即食美味傳承。",
           "price": 120,
           "spec": "300g/包",
-          "image": "",
+          "image": "public/assets/pingtung/B_7_２.png",
           "link": ""
         }
       ],
@@ -357,7 +357,7 @@
       "heroWords": null,
       "origin": "屏東佳冬鄉",
       "story": "佳冬鄉農會一個以蓮霧種植和農村體驗為特色的農會。 農會推廣的「透紅佳人」蓮霧品牌，以其高品質和穩定的產量聞名，並成功拓展到國際市場。 此外，佳冬鄉農會也積極發展農村體驗活動，將在地人文與農遊結合，讓遊客體驗客庄風情與文化。",
-      "heroImage": "",
+      "heroImage": "public/assets/jiadong/B_8_1.png",
       "cta": {
         "label": "",
         "link": ""
@@ -370,7 +370,7 @@
           "summary": "低溫烘燥留住蓮霧新鮮的好滋味。清甜爽口，含有淡淡果乾香。當成零嘴健康又無負擔！",
           "price": 200,
           "spec": "50g/包",
-          "image": "",
+          "image": "public/assets/jiadong/B_8_1.png",
           "link": ""
         }
       ],

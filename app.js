@@ -14,11 +14,28 @@ function getQuery(name) {
   return params.get(name);
 }
 
+function getAssetPath(url) {
+  if (!url) return '';
+  // 如果是絕對路徑或外部連結，直接回傳
+  if (url.startsWith('http') || url.startsWith('//') || url.startsWith('data:')) {
+    return url;
+  }
+
+  let prefix = '';
+  if (window.location.pathname.includes('/brands/')) {
+    prefix = '../../';
+  }
+
+  // 移除可能重複的 ../
+  const cleanUrl = url.replace(/^(\.\.\/)+/, '');
+  return `${prefix}${cleanUrl}`;
+}
+
 function createProductCard(product) {
   const div = document.createElement('div');
   div.className = 'card';
   div.innerHTML = `
-    <img src="${product.image}" alt="${product.name}" loading="lazy" />
+    <img src="${getAssetPath(product.image)}" alt="${product.name}" loading="lazy" />
     <div class="card-body">
       <h3>${product.name}</h3>
       <p class="summary">${product.summary}</p>
@@ -37,7 +54,7 @@ function createBrandCard(brand) {
 
   div.innerHTML = `
     <div class="brand-image">
-      <img src="${brand.heroImage}" alt="${brand.name}" loading="lazy" />
+      <img src="${getAssetPath(brand.heroImage)}" alt="${brand.name}" loading="lazy" />
       <div class="brand-overlay">
         <span class="view-tag">進入品牌</span>
       </div>
@@ -59,11 +76,19 @@ function createBrandCard(brand) {
 function renderHero(brand) {
   const hero = document.querySelector('.lp-hero');
   if (!hero) return;
-  hero.style.setProperty('--hero-bg', `url('${brand.heroImage}')`);
-  document.querySelector('.hero-badges').innerHTML = brand.badges.map(b => `<span class="badge">${b}</span>`).join('');
-  document.querySelector('.hero-brand').textContent = brand.name;
-  document.querySelector('.hero-tagline').textContent = brand.tagline;
-  document.querySelector('.hero-story').textContent = brand.story;
+  if (brand.heroImage) {
+    hero.style.setProperty('--hero-bg', `url('${getAssetPath(brand.heroImage)}')`);
+  }
+  const badgeWrap = document.querySelector('.hero-badges');
+  if (badgeWrap) {
+    badgeWrap.innerHTML = (brand.badges || []).map(b => `<span class="badge">${b}</span>`).join('');
+  }
+  const brandTitle = document.querySelector('.hero-brand');
+  if (brandTitle) brandTitle.textContent = brand.name || '';
+  const tagline = document.querySelector('.hero-tagline');
+  if (tagline) tagline.textContent = brand.tagline || '';
+  const story = document.querySelector('.hero-story');
+  if (story) story.textContent = brand.story || '';
   const ctas = document.querySelectorAll('.hero-cta');
   ctas.forEach(cta => {
     cta.href = brand.cta.link;
@@ -79,9 +104,9 @@ function renderStory(brand) {
   const text = document.querySelector('.story-text');
   if (text) text.textContent = brand.story;
   const storyImg = document.querySelector('.story-img');
-  if (storyImg) {
-    storyImg.src = brand.heroImage;
-    storyImg.alt = brand.name;
+  if (storyImg && brand.heroImage) {
+    storyImg.src = getAssetPath(brand.heroImage);
+    storyImg.alt = brand.name || '';
   }
 }
 
@@ -152,16 +177,19 @@ async function initBrand() {
     slug = pathParts[brandsIdx + 1];
   }
 
+  console.log('Initializing brand page for slug:', slug);
   const data = await loadBrands();
   const brand = data.brands.find(b => b.slug === slug);
 
   if (!brand) {
+    console.warn('Brand not found:', slug);
     const container = document.querySelector('.page-shell');
     if (container) container.innerHTML = '<p style="padding: 100px; text-align: center;">找不到品牌資料。</p>';
     return;
   }
 
-  document.title = brand.seo?.title || `${brand.name} | Pingtung Friends`;
+  console.log('Rendering brand:', brand.name);
+  document.title = brand.seo?.title || `${brand.name || '品牌頁'} | Pingtung Friends`;
   renderHero(brand);
   renderStory(brand);
   renderProducts(brand);
