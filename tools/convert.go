@@ -277,6 +277,9 @@ func main() {
 		html = strings.ReplaceAll(html, `<p class="hero-tagline"></p>`, fmt.Sprintf(`<p class="hero-tagline">%s</p>`, brand.Tagline))
 		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
 		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
+		html = strings.ReplaceAll(html, `<h2>RECIPES / PRODUCTS</h2>`, `<h2>推薦產品</h2>`)
+		html = strings.ReplaceAll(html, `<h2>VIDEOS</h2>`, `<h2>影音紀實</h2>`)
+		html = strings.ReplaceAll(html, `<h2>FAQ</h2>`, `<h2>常見問題</h2>`)
 		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.Name))
 
 		// Hero Background SSG Injection
@@ -315,9 +318,8 @@ func main() {
 							<h3>%s</h3>
 							<p class="summary">%s</p>
 							<p class="price">$%d · %s</p>
-							<a class="btn-primary" href="%s" target="_blank" rel="noopener">立即購買</a>
 						</div>
-					</div>`, img, p.Name, p.Name, p.Summary, p.Price, p.Spec, p.Link))
+					</div>`, img, p.Name, p.Name, p.Summary, p.Price, p.Spec))
 			}
 			html = strings.ReplaceAll(html, `<div class="product-grid"></div>`, fmt.Sprintf(`<div class="product-grid">%s</div>`, prodHTML.String()))
 		}
@@ -329,7 +331,7 @@ func main() {
 				videoHTML.WriteString(fmt.Sprintf(`
 					<div class="video-item">
 						<div>%s</div>
-						<a href="%s" target="_blank" rel="noopener">立即播放</a>
+						<a href="%s" target="_blank" rel="noopener">播放影片</a>
 					</div>`, v.Title, v.URL))
 			}
 			html = strings.ReplaceAll(html, `<div class="video-list"></div>`, fmt.Sprintf(`<div class="video-list">%s</div>`, videoHTML.String()))

@@ -40,7 +40,6 @@ function createProductCard(product) {
       <h3>${product.name}</h3>
       <p class="summary">${product.summary}</p>
       <p class="price">$${product.price} · ${product.spec}</p>
-      <a class="btn-primary" href="${product.link}" target="_blank" rel="noopener">立即購買</a>
     </div>
   `;
   return div;
@@ -124,7 +123,7 @@ function renderVideos(brand) {
   brand.videos.forEach(v => {
     const item = document.createElement('div');
     item.className = 'video-item';
-    item.innerHTML = `<div>${v.title}</div><a href="${v.url}" target="_blank" rel="noopener">立即播放</a>`;
+    item.innerHTML = `<div>${v.title}</div><a href="${v.url}" target="_blank" rel="noopener">播放影片</a>`;
     list.appendChild(item);
   });
 }
