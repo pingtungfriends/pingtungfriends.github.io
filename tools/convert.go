@@ -156,7 +156,7 @@ func main() {
 			Tagline:   getVal(row, headers, "標語"),
 			Origin:    getVal(row, headers, "產地"),
 			Story:     getVal(row, headers, "品牌故事"),
-			HeroImage: resolveAssetPath(getVal(row, headers, "主圖圖片url", "主圖 url")),
+			HeroImage: resolveAssetPath(getVal(row, headers, "hero image", "主圖圖片url", "主圖 url")),
 			QRSlug:    getVal(row, headers, "qrslug", "qr slug"),
 		}
 
@@ -278,6 +278,12 @@ func main() {
 		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
 		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
 		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.Name))
+
+		// Hero Background SSG Injection
+		if brand.HeroImage != "" {
+			heroImgURL := "../../" + brand.HeroImage
+			html = strings.ReplaceAll(html, `<div class="hero-bg" aria-hidden="true"></div>`, fmt.Sprintf(`<div class="hero-bg" aria-hidden="true" style="--hero-bg: url('%s');"></div>`, heroImgURL))
+		}
 
 		// Logo SSG Injection
 		if brand.Logo != "" {
