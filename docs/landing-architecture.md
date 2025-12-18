@@ -99,3 +99,4 @@
 - 海浪 Hero 風格示範：`hero-concept.html` 搭配 `hero-concept.css`，採用 Noto Sans TC、背景圖覆疊與字體背景裁切（background-clip）呈現文字與圖片融合效果，可作為第一屏視覺參考。  
 - 首頁整合海浪風格：`index.html` 已加入海浪 Hero，動態讀取品牌的 heroWords（巨字標語）、主圖、標語、CTA。  
 - Hero 對比自動判斷：頁面會讀取 heroImage，計算亮度，若偏亮則加強覆蓋濾鏡與文字陰影（保持白字），提升可讀性；另在 Hero 文字背後加入 liquid glass 效果的玻璃卡片，凸顯文字。  
+- 長頁結構：`index.html` 以單品牌長卷頁呈現（Hero + Story + 精選產品 <=3 + 護照 CTA + 據點），背景疊加植物裝飾圖與紙質感底色。  

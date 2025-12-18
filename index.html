@@ -6,51 +6,107 @@
   <title>品牌列表｜示範</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body data-page="index">
-  <section class="hero-showcase">
-    <div class="nav">
-      <div class="brand">Pingtung Friends</div>
+<body data-page="landing">
+  <div class="page-bg"></div>
+  <div class="page-shell">
+    <img class="leaf-decor leaf-left" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=60" alt="" />
+    <img class="leaf-decor leaf-right" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=60" alt="" />
+    <img class="leaf-decor leaf-top" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=400&q=60" alt="" />
+    <header class="lp-nav">
+      <div class="logo">Pingtung Friends</div>
       <nav>
         <a href="#" class="active">首頁</a>
-        <a href="#">品牌</a>
-        <a href="#">產品</a>
-        <a href="#">服務</a>
-        <a href="#">聯絡</a>
+        <a href="#story">故事</a>
+        <a href="#products">產品</a>
+        <a href="#passport">護照</a>
+        <a href="#map">據點</a>
       </nav>
-      <div class="burger" aria-label="menu"><span></span><span></span><span></span></div>
-    </div>
-    <div class="hero-shell">
-      <div>
-        <p class="kicker">屏東在地 · 海風與田野</p>
-        <h1 class="hero-brand">品牌名稱</h1>
-        <p class="hero-tagline">品牌標語</p>
-        <p class="lede hero-story">品牌故事簡述</p>
-        <a class="ghost-btn hero-cta" href="#" target="_blank" rel="noopener">立即品嚐</a>
-      </div>
-      <div>
-        <div class="glass-panel">
-          <div class="hero-big-text"></div>
-        </div>
-        <div class="hero-pager">01 <span>/</span> 02</div>
-      </div>
-    </div>
-    <div class="hero-social">
-      <a href="#" aria-label="facebook">f</a>
-      <a href="#" aria-label="twitter">t</a>
-      <a href="#" aria-label="instagram">ig</a>
-    </div>
-  </section>
-  <div class="container">
-    <header>
-      <div class="logo">Pingtung Friends</div>
-      <a class="btn-primary" href="https://line.me">聯繫我們</a>
+      <a class="ghost-btn hero-cta" href="#" target="_blank" rel="noopener">立即行動</a>
     </header>
 
-    <section class="section">
-      <h2>品牌一頁式示範</h2>
-      <p class="small">點擊品牌卡片查看一頁式頁面（brand.html?slug=...）。</p>
-      <div class="brand-list"></div>
+    <section class="lp-hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="hero-badges"></div>
+        <h1 class="hero-brand">品牌名稱</h1>
+        <p class="hero-tagline">品牌標語</p>
+        <p class="hero-story">品牌故事簡述</p>
+        <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">立即品嚐</a>
+      </div>
+      <div class="hero-glass">
+        <div class="hero-big-text"></div>
+      </div>
     </section>
+
+    <section id="story" class="lp-section story-section">
+      <div class="section-head">
+        <h2>OUR STORY</h2>
+        <p class="small">在地風土 · 共好加工 · 自然風味</p>
+      </div>
+      <div class="story-grid">
+        <p class="story-text"></p>
+        <div class="story-card">
+          <img class="story-img" alt="story" />
+          <div class="story-note">產地風景 / 品牌日常</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="lp-section recipes-section">
+      <div class="section-head">
+        <h2>RECIPES / PRODUCTS</h2>
+        <p class="small">精選熱銷，體驗屏東香氣</p>
+      </div>
+      <div class="product-grid"></div>
+    </section>
+
+    <section id="passport" class="lp-section passport-section">
+      <div class="section-head">
+        <h2>品牌護照</h2>
+        <p class="small">掃碼收藏，解鎖線上導覽與小禮</p>
+      </div>
+      <div class="passport-card">
+        <div>
+          <p>加入品牌護照，取得 QRcode、優惠與新產品通知。</p>
+          <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">領取護照</a>
+        </div>
+        <img class="passport-img" alt="passport" />
+      </div>
+    </section>
+
+    <section id="map" class="lp-section map-section">
+      <div class="section-head">
+        <h2>MAP · 據點</h2>
+        <p class="small">線下合作通路 / 期間快閃</p>
+      </div>
+      <div class="map-grid">
+        <div class="map-spot">
+          <div class="map-pin">屏東</div>
+          <p>可到合作販賣機或友善店家購買。</p>
+        </div>
+        <div class="map-list">
+          <div class="map-item">小農市集 · 週末限定</div>
+          <div class="map-item">合作咖啡廳 · 品牌專區</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="lp-footer">
+      <div class="footer-banner">
+        <div>
+          <div class="footer-badges hero-badges"></div>
+          <h3 class="footer-title">屏東風味，隨時可得</h3>
+          <p class="footer-text">掃碼或點擊 CTA 立即品嚐在地加工好物。</p>
+        </div>
+        <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">立刻前往</a>
+      </div>
+      <div class="footer-nav">
+        <span>Pingtung Friends</span>
+        <a href="#">品牌</a>
+        <a href="#">產品</a>
+        <a href="#">聯絡</a>
+      </div>
+    </footer>
   </div>
   <script src="app.js"></script>
 </body>

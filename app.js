@@ -38,37 +38,30 @@ function createBrandCard(brand) {
 }
 
 function renderHero(brand) {
-  const hero = document.querySelector('.hero');
+  const hero = document.querySelector('.lp-hero');
   hero.style.setProperty('--hero-bg', `url('${brand.heroImage}')`);
-  hero.innerHTML = `
-    <img src="${brand.heroImage}" alt="${brand.name}" />
-    <div class="content hero-grid">
-      <div>
-        <div class="badges">${brand.badges.map(b => `<span class="badge">${b}</span>`).join('')}</div>
-        <h1>${brand.name}</h1>
-        <p>${brand.tagline}</p>
-        <p>${brand.story}</p>
-        <a class="btn-primary" href="${brand.cta.link}" target="_blank" rel="noopener">${brand.cta.label}</a>
-      </div>
-      <div class="glass-panel">
-        <div class="big-text">${(brand.heroWords || []).map(w => `<span>${w}</span>`).join('')}</div>
-      </div>
-    </div>
-  `;
+  document.querySelector('.hero-badges').innerHTML = brand.badges.map(b => `<span class="badge">${b}</span>`).join('');
+  document.querySelector('.hero-brand').textContent = brand.name;
+  document.querySelector('.hero-tagline').textContent = brand.tagline;
+  document.querySelector('.hero-story').textContent = brand.story;
+  const ctas = document.querySelectorAll('.hero-cta');
+  ctas.forEach(cta => { cta.href = brand.cta.link; cta.textContent = brand.cta.label; });
+  const bigText = document.querySelector('.hero-big-text');
+  bigText.innerHTML = (brand.heroWords || []).map(w => `<span>${w}</span>`).join('');
   applyHeroContrast(hero, brand.heroImage);
 }
 
 function renderStory(brand) {
-  document.querySelector('#story').innerHTML = `
-    <h2>品牌故事｜${brand.origin}</h2>
-    <p>${brand.story}</p>
-    <div class="badges">${brand.badges.map(b => `<span class="badge" style="color:var(--leaf-dark);background:rgba(47,122,77,0.12);border:1px solid rgba(47,122,77,0.25);">${b}</span>`).join('')}</div>
-  `;
+  document.querySelector('.story-text').textContent = brand.story;
+  const storyImg = document.querySelector('.story-img');
+  storyImg.src = brand.heroImage;
+  storyImg.alt = brand.name;
 }
 
 function renderProducts(brand) {
-  const wrap = document.querySelector('#products .grid');
-  brand.products.forEach(p => wrap.appendChild(createProductCard(p)));
+  const wrap = document.querySelector('.product-grid');
+  wrap.innerHTML = '';
+  brand.products.slice(0, 3).forEach(p => wrap.appendChild(createProductCard(p)));
 }
 
 function renderVideos(brand) {
@@ -92,9 +85,11 @@ function renderFAQ(brand) {
 }
 
 function renderFooterCTA(brand) {
-  const btn = document.querySelector('#footer-cta');
-  btn.href = brand.cta.link;
-  btn.textContent = brand.cta.label;
+  const btns = document.querySelectorAll('.hero-cta');
+  btns.forEach(btn => {
+    btn.href = brand.cta.link;
+    btn.textContent = brand.cta.label;
+  });
 }
 
 function renderHeroShowcase(brands) {
@@ -156,9 +151,11 @@ async function applyHeroContrast(el, imgUrl) {
 
 async function initIndex() {
   const data = await loadBrands();
-  renderHeroShowcase(data.brands);
-  const wrap = document.querySelector('.brand-list');
-  data.brands.forEach(brand => wrap.appendChild(createBrandCard(brand)));
+  const brand = data.brands[0];
+  renderHero(brand);
+  renderStory(brand);
+  renderProducts(brand);
+  renderFooterCTA(brand);
 }
 
 async function initBrand() {
@@ -180,6 +177,6 @@ async function initBrand() {
 
 window.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
-  if (page === 'index') initIndex();
+  if (page === 'landing') initIndex();
   if (page === 'brand') initBrand();
 });
