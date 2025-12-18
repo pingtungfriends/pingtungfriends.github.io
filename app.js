@@ -92,6 +92,39 @@ function renderFooterCTA(brand) {
   });
 }
 
+function renderDecorations() {
+  const layer = document.querySelector('.decor-layer');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const imgs = [
+    'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=800&q=70',
+    'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=800&q=70'
+  ];
+  const slots = [
+    { top: '40px', left: '-50px', width: 160, rotate: -8 },
+    { top: '260px', left: '82%', width: 140, rotate: 10 },
+    { top: '620px', left: '-60px', width: 180, rotate: 6 },
+    { top: '1180px', left: '85%', width: 160, rotate: -12 },
+    { top: '1680px', left: '-45px', width: 150, rotate: 9 },
+    { top: '2100px', left: '78%', width: 170, rotate: -6 }
+  ];
+  slots.forEach((slot, i) => {
+    const el = document.createElement('div');
+    el.className = 'decor-plant';
+    const img = imgs[i % imgs.length];
+    el.style.width = `${slot.width}px`;
+    el.style.height = `${slot.width * 1.05}px`;
+    el.style.top = slot.top;
+    el.style.left = slot.left;
+    el.style.transform = `rotate(${slot.rotate}deg)`;
+    el.style.backgroundImage = `url('${img}')`;
+    layer.appendChild(el);
+  });
+}
+
 function renderHeroShowcase(brands) {
   const el = document.querySelector('.hero-showcase');
   if (!el || !brands.length) return;
@@ -156,6 +189,7 @@ async function initIndex() {
   renderStory(brand);
   renderProducts(brand);
   renderFooterCTA(brand);
+  renderDecorations();
 }
 
 async function initBrand() {

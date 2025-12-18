@@ -40,6 +40,21 @@ body {
   overflow: hidden;
 }
 
+.decor-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.decor-plant {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.18));
+  opacity: 0.28;
+}
+
 .lp-nav {
   display: flex;
   align-items: center;
