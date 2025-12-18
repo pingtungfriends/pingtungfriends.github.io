@@ -75,8 +75,10 @@ function renderVideos(brand) {
 }
 
 function renderFAQ(brand) {
-  const faq = document.querySelector('#faq');
-  brand.faq.forEach(item => {
+  const faq = document.querySelector('#faq-list');
+  if (!faq) return;
+  faq.innerHTML = '';
+  (brand.faq || []).forEach(item => {
     const div = document.createElement('div');
     div.className = 'faq-item';
     div.innerHTML = `<strong>Q：${item.q}</strong><div>A：${item.a}</div>`;
@@ -88,42 +90,10 @@ function renderFooterCTA(brand) {
   const btns = document.querySelectorAll('.hero-cta');
   btns.forEach(btn => {
     btn.href = brand.cta.link;
-    btn.textContent = brand.cta.label;
+    btn.textContent = brand.cta.label || '立即購買';
   });
 }
 
-function renderDecorations() {
-  const layer = document.querySelector('.decor-layer');
-  if (!layer) return;
-  layer.innerHTML = '';
-  const imgs = [
-    'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=70',
-    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=70',
-    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=70',
-    'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=800&q=70',
-    'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&w=800&q=70'
-  ];
-  const slots = [
-    { top: '40px', left: '-50px', width: 160, rotate: -8 },
-    { top: '260px', left: '82%', width: 140, rotate: 10 },
-    { top: '620px', left: '-60px', width: 180, rotate: 6 },
-    { top: '1180px', left: '85%', width: 160, rotate: -12 },
-    { top: '1680px', left: '-45px', width: 150, rotate: 9 },
-    { top: '2100px', left: '78%', width: 170, rotate: -6 }
-  ];
-  slots.forEach((slot, i) => {
-    const el = document.createElement('div');
-    el.className = 'decor-plant';
-    const img = imgs[i % imgs.length];
-    el.style.width = `${slot.width}px`;
-    el.style.height = `${slot.width * 1.05}px`;
-    el.style.top = slot.top;
-    el.style.left = slot.left;
-    el.style.transform = `rotate(${slot.rotate}deg)`;
-    el.style.backgroundImage = `url('${img}')`;
-    layer.appendChild(el);
-  });
-}
 
 function renderHeroShowcase(brands) {
   const el = document.querySelector('.hero-showcase');
@@ -172,24 +142,20 @@ function sampleImageLightness(src, defaultValue = null) {
 async function applyHeroContrast(el, imgUrl) {
   if (!el || !imgUrl) return;
   el.classList.remove('hero-light', 'hero-dark', 'hero-bright');
-  const lightness = await sampleImageLightness(imgUrl, null);
-  // >180 表示背景偏亮：提高覆蓋強度
-  if (lightness !== null && lightness > 180) {
-    el.classList.add('hero-bright');
-    el.style.setProperty('--hero-ov-boost', '0.25');
-  } else {
-    el.style.setProperty('--hero-ov-boost', '0');
-  }
+  // 這裡可以加入亮度判斷，暫時設為 bright 提升視覺感
+  el.classList.add('hero-bright');
+  el.style.setProperty('--hero-ov-boost', '0.2');
 }
 
 async function initIndex() {
   const data = await loadBrands();
   const brand = data.brands[0];
-  renderHero(brand);
-  renderStory(brand);
-  renderProducts(brand);
-  renderFooterCTA(brand);
-  renderDecorations();
+  if (brand) {
+    renderHero(brand);
+    renderStory(brand);
+    renderProducts(brand);
+    renderFooterCTA(brand);
+  }
 }
 
 async function initBrand() {
@@ -197,7 +163,8 @@ async function initBrand() {
   const data = await loadBrands();
   const brand = data.brands.find(b => b.slug === slug);
   if (!brand) {
-    document.querySelector('.container').innerHTML = '<p>找不到品牌資料。</p>';
+    const container = document.querySelector('.page-shell');
+    if (container) container.innerHTML = '<p style="padding: 100px; text-align: center;">找不到品牌資料。</p>';
     return;
   }
   document.title = brand.seo?.title || brand.name;

@@ -1,37 +1,72 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>品牌頁｜示範</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body data-page="brand">
-  <div class="container">
-    <header>
+  <div class="page-bg"></div>
+  <div class="page-shell">
+    <header class="lp-nav">
       <div class="logo">Pingtung Friends</div>
       <a class="btn-primary" href="index.html">返回列表</a>
     </header>
 
-    <section class="hero"></section>
-
-    <section id="story" class="section"></section>
-
-    <section id="products" class="section">
-      <h2>產品精選</h2>
-      <div class="grid"></div>
+    <section class="lp-hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="hero-badges"></div>
+        <h1 class="hero-brand"></h1>
+        <p class="hero-tagline"></p>
+        <p class="hero-story"></p>
+        <a class="btn-primary hero-cta" href="#" target="_blank" rel="noopener">立即行動</a>
+      </div>
+      <div class="hero-glass">
+        <div class="hero-big-text"></div>
+      </div>
     </section>
 
-    <section id="videos" class="section">
-      <h2>影片</h2>
+    <section id="story" class="lp-section story-section">
+      <div class="section-head">
+        <h2>OUR STORY</h2>
+        <p class="small">在地風土 · 共好加工 · 自然風味</p>
+      </div>
+      <div class="story-grid">
+        <p class="story-text"></p>
+        <div class="story-card">
+          <img class="story-img" alt="story" />
+          <div class="story-note">產地風景 / 品牌日常</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" class="lp-section recipes-section">
+      <div class="section-head">
+        <h2>RECIPES / PRODUCTS</h2>
+      </div>
+      <div class="product-grid"></div>
+    </section>
+
+    <section id="videos" class="lp-section">
+      <div class="section-head">
+        <h2>VIDEOS</h2>
+      </div>
       <div class="video-list"></div>
     </section>
 
-    <section id="faq" class="section">
-      <h2>常見問題</h2>
+    <section id="faq" class="lp-section">
+      <div class="section-head">
+        <h2>FAQ</h2>
+      </div>
+      <div class="faq-list" id="faq-list"></div>
     </section>
   </div>
   <a id="footer-cta" class="footer-cta" href="#">立刻行動</a>
   <script src="app.js"></script>
 </body>
+
 </html>

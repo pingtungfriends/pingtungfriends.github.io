@@ -53,21 +53,22 @@
 
 ## 資料蒐集與轉換（ODS 表單）
 - 範例檔：`docs/sample-brands.ods`（sheet 名稱 `brands`），欄位含 slug、品牌名稱、標語、Hero 巨字標語（例：FLOW|WITH|IT）、產地、品牌故事、主圖 URL、CTA 文字/連結、產品 1/2（名稱/摘要/價格/規格/圖片/連結）、影片標題/網址、徽章 1/2、SEO 標題/描述。
-- 交付流程：你填好 ODS / CSV 後，使用簡單轉換腳本（可用 Node/Go/Python）讀取試算表，輸出 `data/brands/<slug>.json`，並同步下載圖片到 `public/assets/<slug>/`。
+- 交付流程：你填好 ODS / CSV 後，使用 Go 轉換程式讀取試算表，輸出 `data/brands.json`，並同步下載圖片到 `public/assets/<slug>/`。
 - 轉換工具可以做欄位驗證（必填 CTA、產品至少 10 項等）並自動補上 UTM。
 
-## 檔案與模板結構（建議 Next.js/React）
-- `data/brands/<slug>.json`：每品牌資料；新增品牌只需新增檔案與素材。
+## 檔案與模板結構 (Vanilla JS + HTML)
+- `data/brands.json`：匯總所有品牌資料的 JSON 檔案，由 Go 工具生成。
 - `public/assets/<slug>/`：品牌圖片、影片縮圖、QR 圖檔。
-- `pages/brands/[slug].tsx`：單一模板，依 slug 讀取資料生成 SSG 頁面；支援 `qrSlug` 短網址 redirect。
-- `components/BrandPage/*`：Hero、Story、Products、Videos、CTA Bar、FAQ 等可重排模組。
-- `pages/api/track`：接收掃碼/點擊/播放事件，送至分析或暫存。
+- `index.html`：品牌列表與單品牌 Landing Page 渲染入口。
+- `brand.html`：專門處理單一品牌的頁面（透過 slug 參數）。
+- `app.js`：核心渲染邏輯，使用 Vanilla JS 確保 GitHub Pages 相容性。
 
 ## 生成流程（新增品牌）
 1) 收集素材：hero 風景照、產品照 >=10、徽章/認證、短影片 3+、CTA 連結。  
-2) 建立 `data/brands/<slug>.json`，放素材到 `public/assets/<slug>/`。  
-3) 執行 `npm run build` 生成靜態頁；`qrSlug` 對應的短網址/QRCode 指向 `/brands/<slug>`。  
-4) 驗收：檢查手機端 CTA 浮動、影片播放事件、產品卡 CTA 正常。
+2) 更新 `docs/sample-brands.ods`。
+3) 執行 `go run tools/convert.go` 更新 `data/brands.json`。
+4) 將素材放置於指定路徑（或由腳本自動下載）。
+5) 驗收：檢查手機端 CTA 浮動、影片播放事件、產品卡 CTA 正常。
 
 ## QR 與導流
 - 為每品牌產生 QR 圖檔（SVG/PNG），檔名 `qr-<slug>.svg`；可在後台或 CI 以 `qr-image` 等工具生成。
@@ -100,3 +101,18 @@
 - 首頁整合海浪風格：`index.html` 已加入海浪 Hero，動態讀取品牌的 heroWords（巨字標語）、主圖、標語、CTA。  
 - Hero 對比自動判斷：頁面會讀取 heroImage，計算亮度，若偏亮則加強覆蓋濾鏡與文字陰影（保持白字），提升可讀性；另在 Hero 文字背後加入 liquid glass 效果的玻璃卡片，凸顯文字。  
 - 長頁結構：`index.html` 以單品牌長卷頁呈現（Hero + Story + 精選產品 <=3 + 護照 CTA + 據點），背景疊加植物裝飾圖與紙質感底色。  
+
+## 開發路線圖 (Current Roadmap)
+- [x] **Phase 1: 基礎自動化 [DONE]**
+  - 實作 Go 轉換程式 `tools/convert.go`，成功連結 `sample-brands.ods` 與 `brands.json`。
+  - 支援 `xlsx` 與 `go-ods` 套件進行資料讀取。
+- [ ] **Phase 2: 自然風格視覺強化 [進行中]**
+  - 使用 AI 生成高品質農地與工坊景觀圖 (Done)。
+  - 引入紙張紋理 (Natural Paper Texture) 與植物插圖裝飾。
+  - 實作 Hero 區塊的漸層覆蓋與高對比文字設計。
+- [ ] **Phase 3: CTA 與成效優化**
+  - 實作行動端常駐 CTA 按鈕。
+  - 增加產品卡片的 Hover/Tap 效果，強調購買連結。
+- [ ] **Phase 4: 生成與發布優化**
+  - 整合單一品牌頁面範本渲染邏輯。
+  - 驗證 GitHub Pages 相容性。
