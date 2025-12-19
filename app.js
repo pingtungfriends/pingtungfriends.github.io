@@ -188,7 +188,7 @@ async function initBrand() {
   }
 
   console.log('Rendering brand:', brand.name);
-  document.title = brand.seo?.title || `${brand.name || '品牌頁'} | Pingtung Friends`;
+  document.title = brand.seo?.title || `${brand.name || '品牌頁'}`;
 
   // Render Logo
   const logoImg = document.getElementById('brand-logo');

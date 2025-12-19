@@ -292,9 +292,9 @@ func main() {
 		if brand.Logo != "" {
 			logoURL := "../../" + brand.Logo
 			html = strings.ReplaceAll(html, `id="brand-logo" src="" alt="" style="display:none;`, fmt.Sprintf(`id="brand-logo" src="%s" alt="%s" style="display:block;`, logoURL, brand.Name))
-			html = strings.ReplaceAll(html, `id="brand-name-text">Pingtung Friends</span>`, fmt.Sprintf(`id="brand-name-text" style="display:none;">%s</span>`, brand.Name))
+			html = strings.ReplaceAll(html, `id="brand-name-text">屏東平原</span>`, fmt.Sprintf(`id="brand-name-text" style="display:none;">%s</span>`, brand.Name))
 		} else if brand.Name != "" {
-			html = strings.ReplaceAll(html, `id="brand-name-text">Pingtung Friends</span>`, fmt.Sprintf(`id="brand-name-text">%s</span>`, brand.Name))
+			html = strings.ReplaceAll(html, `id="brand-name-text">屏東平原</span>`, fmt.Sprintf(`id="brand-name-text">%s</span>`, brand.Name))
 		}
 
 		// HeroWords SSG Injection
