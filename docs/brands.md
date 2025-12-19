@@ -1,6 +1,6 @@
 # 品牌資料管理與轉換指南 (Brands Data Management)
 
-本計畫所有品牌資訊皆透過 `docs/brands.xlsx` 進行管理。
+本專案所有品牌資訊皆透過 `docs/brands.xlsx` 進行管理。
 
 ## 1. Excel 欄位定義 (Field Definitions)
 

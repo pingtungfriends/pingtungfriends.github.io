@@ -1,10 +1,10 @@
 # 系統架構說明 (System Architecture)
 
-本計畫「屏東農特產品牌官網」採用 **混合式渲染 (Hybrid Rendering)** 架構，結合靜態頁面生成 (SSG) 與客戶端動態載入 (CSR)，兼顧 SEO 效能與開發彈性。
+本專案「屏東農特產品牌官網」採用 **混合式渲染 (Hybrid Rendering)** 架構，結合靜態頁面生成 (SSG) 與客戶端動態載入 (CSR)，兼顧 SEO 效能與開發彈性。
 
 ## 1. 核心流程 (Core Workflow)
 
-1.  **資料源 (Data Source)**: 管理者維修 `docs/brands.xlsx` Excel 檔案。
+1.  **資料源 (Data Source)**: 管理者維護 `docs/brands.xlsx` Excel 檔案。
 2.  **轉換與生成 (Convert & Generate)**: 執行 `go run tools/convert.go`：
     *   讀取 Excel 內容並驗證欄位。
     *   將內容轉換為 `data/brands.json`（供前端動態載入使用）。
@@ -19,7 +19,7 @@
 *   `tools/`: 存放資料處理程式 (`convert.go`)。
 *   `data/`: 存放生成後的 JSON 資料 (`brands.json`)。
 *   `public/assets/`: 存放所有靜態資源（圖片、商標），按品牌 `slug` 分類。
-*   `brands/`: 生成後的各品牌 Landing Page 目錄。
+*   `brands/`: 生成後的各品牌網站目錄。
 *   `index.html`: 品牌地圖首頁。
 *   `brand.html`: 品牌頁面基礎模板。
 *   `style.css`: 全站統一樣式表。
