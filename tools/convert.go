@@ -146,7 +146,9 @@ func main() {
 			}
 
 			// Prepend the standard path
-			return fmt.Sprintf("public/assets/%s/%s", slug, cleaned)
+			path := fmt.Sprintf("public/assets/%s/%s", slug, cleaned)
+			// Ensure forward slashes for web usage, even on Windows
+			return strings.ReplaceAll(path, "\\", "/")
 		}
 
 		brand := Brand{
