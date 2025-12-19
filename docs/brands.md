@@ -37,7 +37,8 @@ go run tools/convert.go
 ```
 
 **執行後的變化：**
-*   `data/brands.json` 會根據最新資料重新生成。
+*   `data/brands.json` 會更新為最新內容（作為資料備份）。
+*   `index.html` 會根據 `index_template.html` 重新生成，並注入所有品牌的預覽卡片。
 *   `brands/` 目錄下的所有子頁面會根據 `brand.html` 模板重新產生，並注入最新的靜態內容。
 
 ## 4. 注意事項
