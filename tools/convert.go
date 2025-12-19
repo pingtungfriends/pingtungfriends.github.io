@@ -277,19 +277,19 @@ func main() {
 		html = strings.ReplaceAll(html, `<p class="hero-tagline"></p>`, fmt.Sprintf(`<p class="hero-tagline">%s</p>`, brand.Tagline))
 		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
 		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
-		if brand.HeroImage != "" {
-			storyImgURL := "../../" + brand.HeroImage
-			html = strings.ReplaceAll(html, `class="story-img" alt="story" />`, fmt.Sprintf(`class="story-img" src="%s" alt="%s" />`, storyImgURL, brand.Name))
-		}
+		// Logo SSG Injection
 		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.Name))
 
 		// Hero Background SSG Injection
+		// Hero Background & Story Image SSG Injection
 		if brand.HeroImage != "" {
 			heroImgURL := "../../" + brand.HeroImage
-			html = strings.ReplaceAll(html, `<div class="hero-bg" aria-hidden="true"></div>`, fmt.Sprintf(`<div class="hero-bg" aria-hidden="true" style="--hero-bg: url('%s');"></div>`, heroImgURL))
-		}
+			// Inlining background-image style directly to avoid CSS variable resolution issues in local file protocol
+			html = strings.ReplaceAll(html, `<div class="hero-bg" aria-hidden="true"></div>`, fmt.Sprintf(`<div class="hero-bg" aria-hidden="true" style="background-image: url('%s');"></div>`, heroImgURL))
 
-		// Logo SSG Injection
+			// Flexible replacement for story image
+			html = strings.ReplaceAll(html, `alt="story" />`, fmt.Sprintf(`src="%s" alt="%s" />`, heroImgURL, brand.Name))
+		}
 		if brand.Logo != "" {
 			logoURL := "../../" + brand.Logo
 			html = strings.ReplaceAll(html, `id="brand-logo" src="" alt="" style="display:none;`, fmt.Sprintf(`id="brand-logo" src="%s" alt="%s" style="display:block;`, logoURL, brand.Name))
@@ -338,6 +338,29 @@ func main() {
 			html = strings.ReplaceAll(html, `<div class="video-list"></div>`, fmt.Sprintf(`<div class="video-list">%s</div>`, videoHTML.String()))
 		}
 
+		// FAQ SSG Injection
+		if len(brand.FAQ) > 0 {
+			var faqHTML strings.Builder
+			for _, item := range brand.FAQ {
+				faqHTML.WriteString(fmt.Sprintf(`
+					<div class="faq-item">
+						<strong>Q：%s</strong>
+						<div>A：%s</div>
+					</div>`, item.Q, item.A))
+			}
+			html = strings.ReplaceAll(html, `<div class="faq-list" id="faq-list"></div>`, fmt.Sprintf(`<div class="faq-list" id="faq-list">%s</div>`, faqHTML.String()))
+		}
+
+		// Footer CTA SSG Injection
+		if brand.CTA.Link != "" {
+			label := brand.CTA.Label
+			if label == "" {
+				label = "立即行動"
+			}
+			html = strings.ReplaceAll(html, `id="footer-cta" class="footer-cta" href="#"`, fmt.Sprintf(`id="footer-cta" class="footer-cta" href="%s" style="display:block;"`, brand.CTA.Link))
+			html = strings.ReplaceAll(html, `>立刻行動</a>`, fmt.Sprintf(`>%s</a>`, label))
+		}
+
 		indexPath := fmt.Sprintf("%s/index.html", brandDir)
 		err = os.WriteFile(indexPath, []byte(html), 0644)
 		if err != nil {
@@ -348,6 +371,68 @@ func main() {
 	}
 
 	fmt.Printf("成功轉換 %d 個品牌資料至 %s 並生成專屬頁面\n", len(brands), outputFile)
+
+	// Generate Index Page with SSG
+	fmt.Println("正在生成首頁 (index.html)...")
+	indexTemplatePath := "index_template.html"
+	indexContent, err := os.ReadFile(indexTemplatePath)
+	if err != nil {
+		log.Fatalf("無法讀取首頁模板 %s: %v", indexTemplatePath, err)
+	}
+
+	var brandsHTML strings.Builder
+	for _, brand := range brands {
+		if brand.Slug == "" {
+			continue
+		}
+
+		// Determine Image (Logo preferred, then Hero)
+		imgSrc := brand.Logo
+		if imgSrc == "" {
+			imgSrc = brand.HeroImage
+		}
+		// Since index.html is at root, paths are relative to root.
+		// resolveAssetPath returns paths like 'public/assets/...', which is correct for root.
+
+		// Badges HTML
+		var badgesHTML strings.Builder
+		count := 0
+		for _, b := range brand.Badges {
+			if count >= 2 {
+				break
+			}
+			badgesHTML.WriteString(fmt.Sprintf("<span>%s</span>", b))
+			count++
+		}
+
+		targetLink := fmt.Sprintf("brands/%s/index.html", brand.Slug)
+
+		brandsHTML.WriteString(fmt.Sprintf(`
+      <div class="brand-card">
+        <div class="brand-image">
+          <img src="%s" alt="%s" loading="lazy" />
+          <div class="brand-overlay">
+            <span class="view-tag">進入品牌</span>
+          </div>
+        </div>
+        <div class="brand-info">
+          <h3>%s</h3>
+          <p class="tagline">%s</p>
+          <p class="origin">📍 %s</p>
+          <div class="brand-badges-mini">
+            %s
+          </div>
+        </div>
+        <a href="%s" class="brand-link-overlay"></a>
+      </div>`, imgSrc, brand.Name, brand.Name, brand.Tagline, brand.Origin, badgesHTML.String(), targetLink))
+	}
+
+	finalIndexHTML := strings.ReplaceAll(string(indexContent), "{{BRAND_CARDS}}", brandsHTML.String())
+	err = os.WriteFile("index.html", []byte(finalIndexHTML), 0644)
+	if err != nil {
+		log.Fatalf("無法寫入 index.html: %v", err)
+	}
+	fmt.Println("成功生成全靜態首頁")
 }
 
 func getVal(row []string, headers map[string]int, names ...string) string {

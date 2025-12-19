@@ -25,7 +25,18 @@
 *   `style.css`: 全站統一樣式表。
 *   `app.js`: 前端互動邏輯。
 
-## 3. 技術棧 (Tech Stack)
+## 4. 開發預覽 (Local Development)
+
+由於首頁與品牌頁採用了 `fetch` API 讀取 JSON 資料，瀏覽器基於安全性考量 (CORS)，無法直接透過「雙擊檔案 (file://)」的方式開啟網頁。
+
+**建議開啟方式：**
+在專案根目錄下執行以下指令開啟本地伺服器：
+```bash
+python3 -m http.server 8000
+```
+接著在瀏覽器輸入 `http://localhost:8000` 即可正常預覽。
+
+## 5. 技術棧 (Tech Stack)
 
 *   **Frontend**: Vanilla HTML/JS, Modern CSS (Variable/Grid/Flex), CSS Backdrop Filter.
 *   **Backend Tooling**: Go 1.20+ (using `excelize` library).
