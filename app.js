@@ -202,10 +202,8 @@ async function initBrand() {
     logoText.textContent = brand.name;
   }
 
-  renderHero(brand);
-  renderStory(brand);
-  renderProducts(brand);
-  renderVideos(brand);
+  // Products, Videos, Hero, Story are now handled by SSG for better performance.
+  // We only need to render dynamic components like FAQ here.
   renderFAQ(brand);
   renderFooterCTA(brand);
 }

@@ -277,9 +277,10 @@ func main() {
 		html = strings.ReplaceAll(html, `<p class="hero-tagline"></p>`, fmt.Sprintf(`<p class="hero-tagline">%s</p>`, brand.Tagline))
 		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
 		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
-		html = strings.ReplaceAll(html, `<h2>RECIPES / PRODUCTS</h2>`, `<h2>推薦產品</h2>`)
-		html = strings.ReplaceAll(html, `<h2>VIDEOS</h2>`, `<h2>影音紀實</h2>`)
-		html = strings.ReplaceAll(html, `<h2>FAQ</h2>`, `<h2>常見問題</h2>`)
+		if brand.HeroImage != "" {
+			storyImgURL := "../../" + brand.HeroImage
+			html = strings.ReplaceAll(html, `class="story-img" alt="story" />`, fmt.Sprintf(`class="story-img" src="%s" alt="%s" />`, storyImgURL, brand.Name))
+		}
 		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.Name))
 
 		// Hero Background SSG Injection
