@@ -7,12 +7,14 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"math"
 	"net/url"
 	"os"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -194,8 +196,12 @@ func main() {
 			if pName == "" {
 				continue
 			}
-			priceStr := getVal(row, headers, fmt.Sprintf("產品 %d 價格", k), fmt.Sprintf("產品%d價格", k))
-			price, _ := strconv.Atoi(priceStr)
+			priceStr := getRawVal(row, headers, fmt.Sprintf("產品 %d 價格", k), fmt.Sprintf("產品%d價格", k))
+			price, err := parsePrice(priceStr)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "警告：品牌 %s 的產品 %s 價格無法解析：%q；使用 0 繼續。\n", brand.Slug, pName, priceStr)
+				price = 0
+			}
 			imgUrl := resolveAssetPath(getVal(row, headers, fmt.Sprintf("產品 %d 圖片url", k), fmt.Sprintf("產品%d圖片url", k), fmt.Sprintf("產品 %d 圖片", k), fmt.Sprintf("產品%d圖片", k)))
 			brand.Products = append(brand.Products, Product{
 				ID:      fmt.Sprintf("%s-%03d", brand.Slug, k),
@@ -262,15 +268,14 @@ func main() {
 		log.Fatal(err)
 	}
 	funcs := template.FuncMap{
-		"splitProduct": func(id string) []string { return strings.Split(id, "-") },
-		"short":        shortName, "town": townName, "asset": assetPath,
+		"short": shortName, "town": townName, "asset": assetPath,
 		"videos": videoViews, "paragraphs": storyParagraphs,
 	}
 	pages, err := template.New("site").Funcs(funcs).ParseFiles("index_template.html", "brand.html")
 	if err != nil {
 		log.Fatal(err)
 	}
-	tiles := []Product{}
+	tiles := []ProductTile{}
 	for _, choice := range []struct{ slug, file string }{
 		{"jiadong", "B_8_1"}, {"xinlong", "B_3_1"}, {"chishan", "B_5_1"},
 		{"fenggang", "B_2_2"}, {"chengde", "B_4_2"}, {"wandan", "B_6_2"}, {"ailiao", "B_1_1"},
@@ -279,7 +284,7 @@ func main() {
 			if b.Slug == choice.slug {
 				for _, p := range b.Products {
 					if strings.Contains(p.Image, choice.file) {
-						tiles = append(tiles, p)
+						tiles = append(tiles, ProductTile{Product: p, Slug: b.Slug})
 					}
 				}
 			}
@@ -311,12 +316,31 @@ func main() {
 	fmt.Printf("成功轉換 %d 個品牌；JSON 保持原始工作表順序。\n", len(brands))
 }
 
+type ProductTile struct {
+	Product
+	Slug string
+}
+
 type PageData struct {
 	Brands      []Brand
 	Brand, Next Brand
 	Map         template.HTML
-	Tiles       []Product
+	Tiles       []ProductTile
 	Prefix      string
+}
+
+func parsePrice(raw string) (int, error) {
+	cleaned := strings.Map(func(r rune) rune {
+		if unicode.IsSpace(r) {
+			return -1
+		}
+		return r
+	}, raw)
+	cleaned = strings.NewReplacer("NT$", "", "$", "", ",", "", "元", "").Replace(cleaned)
+	if whole, fraction, ok := strings.Cut(cleaned, "."); ok && fraction != "" && strings.Trim(fraction, "0") == "" {
+		cleaned = whole
+	}
+	return strconv.Atoi(cleaned)
 }
 
 func routeRank(slug string) int {
@@ -420,7 +444,7 @@ func townshipMap(brands []Brand) (template.HTML, error) {
 	number := regexp.MustCompile(`-?\d+(?:\.\d+)?`)
 	var svg, labels strings.Builder
 	// Label centres are spaced for the narrowest map as well as desktop.
-	labelPositions := map[string][2]int{
+	labelPositions := map[string][2]float64{
 		"屏東市": {335, 605}, "內埔鄉": {655, 650}, "萬丹鄉": {325, 900},
 		"萬巒鄉": {670, 950}, "佳冬鄉": {442, 1308}, "枋寮鄉": {694, 1478}, "枋山鄉": {894, 1917},
 	}
@@ -463,9 +487,24 @@ func townshipMap(brands []Brand) (template.HTML, error) {
 		fmt.Fprintf(&svg, `<path class="town-shape" data-town="%s" d="%s"><title>%s</title></path>`, template.HTMLEscapeString(town), d, template.HTMLEscapeString(town))
 		if len(slugs) > 0 {
 			svg.WriteString(`</a>`)
-			if point, ok := labelPositions[town]; ok {
-				fmt.Fprintf(&labels, `<text class="town-label" data-town="%s" data-slugs="%s" x="%d" y="%d" text-anchor="middle" dominant-baseline="central">%s</text>`, template.HTMLEscapeString(town), strings.Join(slugs, " "), point[0], point[1], template.HTMLEscapeString(town))
+			point, ok := labelPositions[town]
+			if !ok {
+				// The source map uses absolute polygon vertices (M ... Z).
+				coordinates := number.FindAllString(d, -1)
+				if len(coordinates) < 2 || len(coordinates)%2 != 0 {
+					return "", fmt.Errorf("地圖 %s 的 path 缺少完整座標", town)
+				}
+				minX, minY := math.Inf(1), math.Inf(1)
+				maxX, maxY := math.Inf(-1), math.Inf(-1)
+				for i := 0; i < len(coordinates); i += 2 {
+					x, _ := strconv.ParseFloat(coordinates[i], 64)
+					y, _ := strconv.ParseFloat(coordinates[i+1], 64)
+					minX, maxX = math.Min(minX, x), math.Max(maxX, x)
+					minY, maxY = math.Min(minY, y), math.Max(maxY, y)
+				}
+				point = [2]float64{(minX + maxX) / 2, (minY + maxY) / 2}
 			}
+			fmt.Fprintf(&labels, `<text class="town-label" data-town="%s" data-slugs="%s" x="%g" y="%g" text-anchor="middle" dominant-baseline="central">%s</text>`, template.HTMLEscapeString(town), strings.Join(slugs, " "), point[0], point[1], template.HTMLEscapeString(town))
 		}
 	}
 	svg.WriteString(`<g class="map-labels" aria-hidden="true">` + labels.String() + `</g></svg>`)
@@ -473,14 +512,18 @@ func townshipMap(brands []Brand) (template.HTML, error) {
 }
 
 func getVal(row []string, headers map[string]int, names ...string) string {
+	return strings.TrimSpace(getRawVal(row, headers, names...))
+}
+
+func getRawVal(row []string, headers map[string]int, names ...string) string {
 	for _, name := range names {
 		idx, ok := headers[strings.ToLower(name)]
 		if !ok || idx >= len(row) {
 			continue
 		}
 		val := row[idx]
-		if trimmed := strings.TrimSpace(val); trimmed != "" {
-			return trimmed
+		if strings.TrimSpace(val) != "" {
+			return val
 		}
 	}
 	return ""

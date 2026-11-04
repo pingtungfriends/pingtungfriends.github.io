@@ -25,7 +25,7 @@
       </div>
       <div class="specimen-stage" aria-label="屏東在地產品">
         <div class="specimen-mosaic">{{range $i, $p := .Tiles}}
-          <a class="specimen specimen-{{$i}}" href="#brand-{{index (splitProduct $p.ID) 0}}" style="--tile-index:{{$i}}">
+          <a class="specimen specimen-{{$i}}" href="#brand-{{$p.Slug}}" style="--tile-index:{{$i}}">
             <img src="{{$p.Image}}" alt="{{$p.Name}}" width="500" height="500" fetchpriority="high">
           </a>{{end}}
         </div>
@@ -40,7 +40,7 @@
         <h2 id="map-title" data-reveal>品牌地圖，由北到南</h2>
         {{range .Brands}}<article id="brand-{{.Slug}}" class="brand-row" data-slug="{{.Slug}}" data-name="{{short .}}" data-town="{{town .}}">
           <header class="brand-row-heading" data-reveal>
-            <h3><img src="{{.Logo}}" alt="" width="16" height="16" loading="lazy">{{short .}}</h3>
+            <h3>{{if .Logo}}<img src="{{.Logo}}" alt="" width="16" height="16" loading="lazy">{{end}}{{short .}}</h3>
             <span class="town-name">{{town .}}</span>
           </header>
           <p class="brand-tagline" data-reveal>{{.Tagline}}</p>
