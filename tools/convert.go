@@ -2,9 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
+	"html/template"
+	"io"
 	"log"
+	"net/url"
 	"os"
+	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -249,192 +255,221 @@ func main() {
 		log.Fatalf("無法寫入檔案: %v", err)
 	}
 
-	// Generate Directories for each brand
-	fmt.Println("正在生成品牌專屬資料夾...")
-	templatePath := "brand.html"
-	templateContent, err := os.ReadFile(templatePath)
+	// Keep the source JSON in workbook order; only presentation follows the north–south route.
+	sort.SliceStable(brands, func(i, j int) bool { return routeRank(brands[i].Slug) < routeRank(brands[j].Slug) })
+	mapSVG, err := townshipMap(brands)
 	if err != nil {
-		log.Fatalf("無法讀取模板檔 %s: %v", templatePath, err)
+		log.Fatal(err)
+	}
+	funcs := template.FuncMap{
+		"splitProduct": func(id string) []string { return strings.Split(id, "-") },
+		"short":        shortName, "town": townName, "asset": assetPath,
+		"videos": videoViews, "paragraphs": storyParagraphs,
+	}
+	pages, err := template.New("site").Funcs(funcs).ParseFiles("index_template.html", "brand.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+	tiles := []Product{}
+	for _, choice := range []struct{ slug, file string }{
+		{"jiadong", "B_8_1"}, {"xinlong", "B_3_1"}, {"chishan", "B_5_1"},
+		{"fenggang", "B_2_2"}, {"chengde", "B_4_2"}, {"wandan", "B_6_2"}, {"ailiao", "B_1_1"},
+	} {
+		for _, b := range brands {
+			if b.Slug == choice.slug {
+				for _, p := range b.Products {
+					if strings.Contains(p.Image, choice.file) {
+						tiles = append(tiles, p)
+					}
+				}
+			}
+		}
+	}
+	writePage := func(path, name string, data PageData) {
+		var rendered strings.Builder
+		if err := pages.ExecuteTemplate(&rendered, name, data); err != nil {
+			log.Fatal(err)
+		}
+		lines := strings.Split(rendered.String(), "\n")
+		for i := range lines {
+			lines[i] = strings.TrimRight(lines[i], " \t")
+		}
+		if err := os.WriteFile(path, []byte(strings.Join(lines, "\n")), 0644); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("已生成:", path)
 	}
 
-	for _, brand := range brands {
-		if brand.Slug == "" {
-			continue
+	writePage("index.html", "index", PageData{Brands: brands, Map: mapSVG, Tiles: tiles})
+	for i, b := range brands {
+		dir := "brands/" + b.Slug
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Fatal(err)
 		}
-		brandDir := fmt.Sprintf("brands/%s", brand.Slug)
-		err := os.MkdirAll(brandDir, 0755)
+		writePage(dir+"/index.html", "brand", PageData{Brand: b, Next: brands[(i+1)%len(brands)], Prefix: "../../"})
+	}
+	fmt.Printf("成功轉換 %d 個品牌；JSON 保持原始工作表順序。\n", len(brands))
+}
+
+type PageData struct {
+	Brands      []Brand
+	Brand, Next Brand
+	Map         template.HTML
+	Tiles       []Product
+	Prefix      string
+}
+
+func routeRank(slug string) int {
+	for i, s := range []string{"pingtung", "ailiao", "wandan", "chengde", "chishan", "jiadong", "xinlong", "fenggang"} {
+		if slug == s {
+			return i
+		}
+	}
+	return 999
+}
+
+func shortName(b Brand) string {
+	if strings.Contains(b.Name, "社區發展協會") {
+		name := strings.TrimSuffix(b.Name, "發展協會")
+		if i := strings.LastIndexAny(name, "鄉市鎮"); i >= 0 {
+			name = name[i+len("鄉"):]
+		}
+		return name
+	}
+	// 屏東縣農會 is the county's name, rather than a township prefix.
+	if b.Name == "屏東縣農會" {
+		return b.Name
+	}
+	return strings.TrimPrefix(b.Name, "屏東縣")
+}
+
+func townName(b Brand) string {
+	if b.Origin == "屏東市" {
+		return b.Origin
+	}
+	return strings.TrimPrefix(strings.TrimPrefix(b.Origin, "屏東縣"), "屏東")
+}
+
+func assetPath(prefix, path string) string {
+	if path == "" || strings.HasPrefix(path, "/") || strings.HasPrefix(path, "http") || strings.HasPrefix(path, "data:") {
+		return path
+	}
+	return prefix + path
+}
+
+func storyParagraphs(story string) []string {
+	var result []string
+	for _, p := range strings.Split(story, "\n") {
+		if p = strings.TrimSpace(p); p != "" {
+			result = append(result, p)
+		}
+	}
+	return result
+}
+
+type VideoView struct {
+	ID, Title, URL string
+	Shorts         bool
+}
+
+var youtubeID = regexp.MustCompile(`^[A-Za-z0-9_-]{11}$`)
+
+func videoViews(videos []Video) []VideoView {
+	var result []VideoView
+	for _, v := range videos {
+		u, err := url.Parse(v.URL)
 		if err != nil {
-			log.Printf("無法建立資料夾 %s: %v", brandDir, err)
 			continue
 		}
-
-		// Adjust paths in the template to work from the subdirectory
-		html := string(templateContent)
-		html = strings.ReplaceAll(html, `href="style.css"`, `href="../../style.css"`)
-		html = strings.ReplaceAll(html, `src="app.js"`, `src="../../app.js"`)
-		html = strings.ReplaceAll(html, `href="index.html"`, `href="../../index.html"`)
-
-		// Basic SSG Injection
-		html = strings.ReplaceAll(html, `<h1 class="hero-brand"></h1>`, fmt.Sprintf(`<h1 class="hero-brand">%s</h1>`, brand.Name))
-		html = strings.ReplaceAll(html, `<p class="hero-tagline"></p>`, fmt.Sprintf(`<p class="hero-tagline">%s</p>`, brand.Tagline))
-		html = strings.ReplaceAll(html, `<p class="hero-story"></p>`, fmt.Sprintf(`<p class="hero-story">%s</p>`, brand.Story))
-		html = strings.ReplaceAll(html, `<p class="story-text"></p>`, fmt.Sprintf(`<p class="story-text">%s</p>`, brand.Story))
-		// Logo SSG Injection
-		html = strings.ReplaceAll(html, `<title>品牌頁｜示範</title>`, fmt.Sprintf(`<title>%s</title>`, brand.Name))
-
-		// Hero Background SSG Injection
-		// Hero Background & Story Image SSG Injection
-		if brand.HeroImage != "" {
-			heroImgURL := "../../" + brand.HeroImage
-			// Inlining background-image style directly to avoid CSS variable resolution issues in local file protocol
-			html = strings.ReplaceAll(html, `<div class="hero-bg" aria-hidden="true"></div>`, fmt.Sprintf(`<div class="hero-bg" aria-hidden="true" style="background-image: url('%s');"></div>`, heroImgURL))
-
-			// Flexible replacement for story image
-			html = strings.ReplaceAll(html, `alt="story" />`, fmt.Sprintf(`src="%s" alt="%s" />`, heroImgURL, brand.Name))
-		}
-		if brand.Logo != "" {
-			logoURL := "../../" + brand.Logo
-			html = strings.ReplaceAll(html, `id="brand-logo" src="" alt="" style="display:none;`, fmt.Sprintf(`id="brand-logo" src="%s" alt="%s" style="display:block;`, logoURL, brand.Name))
-			html = strings.ReplaceAll(html, `id="brand-name-text">屏東平原</span>`, fmt.Sprintf(`id="brand-name-text" style="display:none;">%s</span>`, brand.Name))
-		} else if brand.Name != "" {
-			html = strings.ReplaceAll(html, `id="brand-name-text">屏東平原</span>`, fmt.Sprintf(`id="brand-name-text">%s</span>`, brand.Name))
-		}
-
-		// HeroWords SSG Injection
-		if len(brand.HeroWords) > 0 {
-			var wordsHTML strings.Builder
-			for _, w := range brand.HeroWords {
-				wordsHTML.WriteString(fmt.Sprintf("<span>%s</span>", w))
+		id := ""
+		shorts := false
+		switch strings.ToLower(u.Hostname()) {
+		case "youtu.be":
+			id = strings.Trim(u.Path, "/")
+		case "youtube.com", "www.youtube.com", "m.youtube.com":
+			parts := strings.Split(strings.Trim(u.Path, "/"), "/")
+			if len(parts) == 2 && (parts[0] == "shorts" || parts[0] == "embed") {
+				id = parts[1]
+				shorts = parts[0] == "shorts"
+			} else {
+				id = u.Query().Get("v")
 			}
-			html = strings.ReplaceAll(html, `<div class="hero-big-text"></div>`, fmt.Sprintf(`<div class="hero-big-text">%s</div>`, wordsHTML.String()))
 		}
-
-		// Products SSG Injection
-		if len(brand.Products) > 0 {
-			var prodHTML strings.Builder
-			for _, p := range brand.Products {
-				img := "../../" + p.Image
-				prodHTML.WriteString(fmt.Sprintf(`
-					<div class="card">
-						<img src="%s" alt="%s" loading="lazy" />
-						<div class="card-body">
-							<h3>%s</h3>
-							<p class="summary">%s</p>
-							<p class="price">$%d · %s</p>
-						</div>
-					</div>`, img, p.Name, p.Name, p.Summary, p.Price, p.Spec))
+		if !youtubeID.MatchString(id) {
+			continue
+		}
+		title := strings.Map(func(r rune) rune {
+			if r >= 0x1F000 && r <= 0x1FAFF || r == 0xFE0F || r == 0x200D {
+				return -1
 			}
-			html = strings.ReplaceAll(html, `<div class="product-grid"></div>`, fmt.Sprintf(`<div class="product-grid">%s</div>`, prodHTML.String()))
-		}
+			return r
+		}, v.Title)
+		result = append(result, VideoView{ID: id, Title: title, URL: v.URL, Shorts: shorts})
+	}
+	return result
+}
 
-		// Videos SSG Injection
-		if len(brand.Videos) > 0 {
-			var videoHTML strings.Builder
-			for _, v := range brand.Videos {
-				videoHTML.WriteString(fmt.Sprintf(`
-					<div class="video-item">
-						<div>%s</div>
-						<a href="%s" target="_blank" rel="noopener">播放影片</a>
-					</div>`, v.Title, v.URL))
-			}
-			html = strings.ReplaceAll(html, `<div class="video-list"></div>`, fmt.Sprintf(`<div class="video-list">%s</div>`, videoHTML.String()))
+// Read only path geometry and titles: election colours and original strokes never enter the page.
+func townshipMap(brands []Brand) (template.HTML, error) {
+	file, err := os.Open("public/assets/common/pingtung-map.svg")
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+	dec := xml.NewDecoder(file)
+	number := regexp.MustCompile(`-?\d+(?:\.\d+)?`)
+	var svg, labels strings.Builder
+	// Label centres are spaced for the narrowest map as well as desktop.
+	labelPositions := map[string][2]int{
+		"屏東市": {335, 605}, "內埔鄉": {655, 650}, "萬丹鄉": {325, 900},
+		"萬巒鄉": {670, 950}, "佳冬鄉": {442, 1308}, "枋寮鄉": {694, 1478}, "枋山鄉": {894, 1917},
+	}
+	svg.WriteString(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 2777" role="group" aria-label="屏東縣鄉鎮品牌地圖"><title>屏東縣鄉鎮品牌地圖</title>`)
+	for {
+		token, err := dec.Token()
+		if err == io.EOF {
+			break
 		}
-
-		// FAQ SSG Injection
-		if len(brand.FAQ) > 0 {
-			var faqHTML strings.Builder
-			for _, item := range brand.FAQ {
-				faqHTML.WriteString(fmt.Sprintf(`
-					<div class="faq-item">
-						<strong>Q：%s</strong>
-						<div>A：%s</div>
-					</div>`, item.Q, item.A))
-			}
-			html = strings.ReplaceAll(html, `<div class="faq-list" id="faq-list"></div>`, fmt.Sprintf(`<div class="faq-list" id="faq-list">%s</div>`, faqHTML.String()))
-		}
-
-		// Footer CTA SSG Injection
-		if brand.CTA.Link != "" {
-			label := brand.CTA.Label
-			if label == "" {
-				label = "立即行動"
-			}
-			html = strings.ReplaceAll(html, `id="footer-cta" class="footer-cta" href="#"`, fmt.Sprintf(`id="footer-cta" class="footer-cta" href="%s" style="display:block;"`, brand.CTA.Link))
-			html = strings.ReplaceAll(html, `>立刻行動</a>`, fmt.Sprintf(`>%s</a>`, label))
-		}
-
-		indexPath := fmt.Sprintf("%s/index.html", brandDir)
-		err = os.WriteFile(indexPath, []byte(html), 0644)
 		if err != nil {
-			log.Printf("無法寫入品牌頁 %s: %v", indexPath, err)
-		} else {
-			fmt.Printf("  -> 已生成: %s\n", indexPath)
+			return "", err
 		}
-	}
-
-	fmt.Printf("成功轉換 %d 個品牌資料至 %s 並生成專屬頁面\n", len(brands), outputFile)
-
-	// Generate Index Page with SSG
-	fmt.Println("正在生成首頁 (index.html)...")
-	indexTemplatePath := "index_template.html"
-	indexContent, err := os.ReadFile(indexTemplatePath)
-	if err != nil {
-		log.Fatalf("無法讀取首頁模板 %s: %v", indexTemplatePath, err)
-	}
-
-	var brandsHTML strings.Builder
-	for _, brand := range brands {
-		if brand.Slug == "" {
+		start, ok := token.(xml.StartElement)
+		if !ok || start.Name.Local != "path" {
 			continue
 		}
-
-		// Determine Image (Logo preferred, then Hero)
-		imgSrc := brand.Logo
-		if imgSrc == "" {
-			imgSrc = brand.HeroImage
+		var path struct {
+			D     string `xml:"d,attr"`
+			Title string `xml:"title"`
 		}
-		// Since index.html is at root, paths are relative to root.
-		// resolveAssetPath returns paths like 'public/assets/...', which is correct for root.
-
-		// Badges HTML
-		var badgesHTML strings.Builder
-		count := 0
-		for _, b := range brand.Badges {
-			if count >= 2 {
-				break
+		if err := dec.DecodeElement(&path, &start); err != nil {
+			return "", err
+		}
+		fields := strings.Fields(path.Title)
+		if len(fields) == 0 {
+			return "", fmt.Errorf("地圖 path 缺少鄉鎮名稱")
+		}
+		town := fields[0]
+		d := number.ReplaceAllStringFunc(path.D, func(n string) string { f, _ := strconv.ParseFloat(n, 64); return strconv.FormatFloat(f, 'f', 1, 64) })
+		var slugs, names []string
+		for _, b := range brands {
+			if strings.Contains(b.Origin, town) {
+				slugs = append(slugs, b.Slug)
+				names = append(names, shortName(b))
 			}
-			badgesHTML.WriteString(fmt.Sprintf("<span>%s</span>", b))
-			count++
 		}
-
-		targetLink := fmt.Sprintf("brands/%s/index.html", brand.Slug)
-
-		brandsHTML.WriteString(fmt.Sprintf(`
-      <div class="brand-card">
-        <div class="brand-image">
-          <img src="%s" alt="%s" loading="lazy" />
-          <div class="brand-overlay">
-            <span class="view-tag">進入品牌</span>
-          </div>
-        </div>
-        <div class="brand-info">
-          <h3>%s</h3>
-          <p class="tagline">%s</p>
-          <p class="origin">📍 %s</p>
-          <div class="brand-badges-mini">
-            %s
-          </div>
-        </div>
-        <a href="%s" class="brand-link-overlay"></a>
-      </div>`, imgSrc, brand.Name, brand.Name, brand.Tagline, brand.Origin, badgesHTML.String(), targetLink))
+		if len(slugs) > 0 {
+			fmt.Fprintf(&svg, `<a class="town has-brand" href="#brand-%s" data-town="%s" data-slugs="%s" aria-label="%s：%s">`, template.HTMLEscapeString(slugs[0]), template.HTMLEscapeString(town), strings.Join(slugs, " "), template.HTMLEscapeString(town), template.HTMLEscapeString(strings.Join(names, "、")))
+		}
+		fmt.Fprintf(&svg, `<path class="town-shape" data-town="%s" d="%s"><title>%s</title></path>`, template.HTMLEscapeString(town), d, template.HTMLEscapeString(town))
+		if len(slugs) > 0 {
+			svg.WriteString(`</a>`)
+			if point, ok := labelPositions[town]; ok {
+				fmt.Fprintf(&labels, `<text class="town-label" data-town="%s" data-slugs="%s" x="%d" y="%d" text-anchor="middle" dominant-baseline="central">%s</text>`, template.HTMLEscapeString(town), strings.Join(slugs, " "), point[0], point[1], template.HTMLEscapeString(town))
+			}
+		}
 	}
-
-	finalIndexHTML := strings.ReplaceAll(string(indexContent), "{{BRAND_CARDS}}", brandsHTML.String())
-	err = os.WriteFile("index.html", []byte(finalIndexHTML), 0644)
-	if err != nil {
-		log.Fatalf("無法寫入 index.html: %v", err)
-	}
-	fmt.Println("成功生成全靜態首頁")
+	svg.WriteString(`<g class="map-labels" aria-hidden="true">` + labels.String() + `</g></svg>`)
+	return template.HTML(svg.String()), nil
 }
 
 func getVal(row []string, headers map[string]int, names ...string) string {

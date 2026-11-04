@@ -1,74 +1,63 @@
-<!DOCTYPE html>
+{{define "brand"}}<!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>品牌頁｜示範</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{short .Brand}}｜屏東好朋友</title>
+  <meta name="description" content="{{.Brand.Tagline}}">
+  {{template "fonts" .}}
+  <link rel="stylesheet" href="../../style.css">
+  <script src="../../app.js" defer></script>
 </head>
-
 <body data-page="brand">
-  <div class="page-bg"></div>
-  <div class="page-shell">
-    <header class="lp-nav">
-      <div class="logo">
-        <img id="brand-logo" src="" alt="" style="display:none; height: 32px; width: auto; object-fit: contain;">
-        <span id="brand-name-text">屏東平原</span>
+  <main>
+    <div class="brand-layout">
+      <div class="brand-visual shutter" data-shutter>
+        <img class="brand-hero-photo" src="{{asset .Prefix .Brand.HeroImage}}" alt="{{short .Brand}}的產地風景" fetchpriority="high">
+        <ul class="hero-words" aria-label="{{range .Brand.HeroWords}}{{.}} {{end}}">{{range .Brand.HeroWords}}<li data-reveal>{{.}}</li>{{end}}</ul>
       </div>
-      <a class="btn-primary" href="index.html">返回列表</a>
-    </header>
-
-    <section class="lp-hero">
-      <div class="hero-bg" aria-hidden="true"></div>
-      <div class="hero-content">
-        <div class="hero-badges"></div>
-        <h1 class="hero-brand"></h1>
-        <p class="hero-tagline"></p>
-        <p class="hero-story"></p>
+      <div class="brand-content">
+        <nav class="brand-nav" aria-label="品牌導覽"><a href="../../index.html#brand-{{.Brand.Slug}}">← 品牌地圖</a>{{if .Brand.Logo}}<img src="{{asset .Prefix .Brand.Logo}}" alt="{{short .Brand}}標誌" height="40">{{end}}</nav>
+        <section class="brand-intro" aria-labelledby="brand-title">
+          <h1 id="brand-title" data-reveal>{{short .Brand}}</h1>
+          <p class="brand-full-name" data-reveal>{{.Brand.Name}}</p>
+          <p class="brand-location" data-reveal>{{town .Brand}} · {{.Brand.Tagline}}</p>
+          <a class="button" href="#products" data-reveal>看產品</a>
+        </section>
+        <section class="brand-story" aria-labelledby="story-title">
+          <h2 id="story-title" data-reveal>品牌故事</h2>
+          {{range paragraphs .Brand.Story}}<p data-reveal>{{.}}</p>{{end}}
+        </section>
+        {{if .Brand.Products}}<section id="products" class="brand-products" aria-labelledby="products-title">
+          <h2 id="products-title" data-reveal>產品</h2>
+          {{range .Brand.Products}}<article class="brand-product">
+            <div class="product-photo" data-reveal><img src="{{asset $.Prefix .Image}}" alt="{{.Name}}" width="500" height="500" loading="lazy"></div>
+            <h3 data-reveal>{{.Name}}</h3>
+            <p class="price" data-reveal>NT${{.Price}} · {{.Spec}}</p>
+            <p data-reveal>{{.Summary}}</p>
+            {{if .Link}}<a class="button" href="{{.Link}}" data-reveal>購買</a>{{end}}
+          </article>{{end}}
+        </section>{{end}}
+        {{if .Brand.Videos}}<section class="brand-videos" aria-labelledby="videos-title">
+          <h2 id="videos-title" data-reveal>影片</h2>
+          {{range videos .Brand.Videos}}<figure class="video-item" data-reveal>
+            <div class="video-frame{{if .Shorts}} is-short{{end}}" data-video="{{.ID}}" data-video-title="{{.Title}}">
+              <img src="https://i.ytimg.com/vi/{{.ID}}/hqdefault.jpg" alt="{{.Title}}影片預覽" loading="lazy" width="480" height="360">
+              <a class="button video-play" href="{{.URL}}" target="_blank" rel="noopener">播放影片</a>
+            </div>
+            <figcaption>{{.Title}}</figcaption>
+          </figure>{{end}}
+        </section>{{end}}
+        {{if .Brand.FAQ}}<section class="brand-faq" aria-labelledby="faq-title"><h2 id="faq-title" data-reveal>常見問題</h2>{{range .Brand.FAQ}}<details><summary>{{.Q}}</summary><p>{{.A}}</p></details>{{end}}</section>{{end}}
+        {{if .Brand.CTA.Link}}<a class="button" href="{{.Brand.CTA.Link}}">{{if .Brand.CTA.Label}}{{.Brand.CTA.Label}}{{else}}聯絡品牌{{end}}</a>{{end}}
       </div>
-      <div class="hero-glass">
-        <div class="hero-big-text"></div>
-      </div>
+    </div>
+    <section class="next-stop" aria-labelledby="next-title">
+      <h2 id="next-title" data-reveal>下一站：{{town .Next}}</h2>
+      <p data-reveal>{{short .Next}}</p>
+      <a class="button" href="../{{.Next.Slug}}/index.html" data-reveal>認識{{short .Next}}</a>
     </section>
-
-    <section id="story" class="lp-section story-section">
-      <div class="section-head">
-        <h2>品牌故事</h2>
-        <p class="small">在地風土 · 共好加工 · 自然風味</p>
-      </div>
-      <div class="story-grid">
-        <p class="story-text"></p>
-        <div class="story-card">
-          <img class="story-img" alt="story" />
-          <div class="story-note">產地風景 / 品牌日常</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="products" class="lp-section recipes-section">
-      <div class="section-head">
-        <h2>推薦產品</h2>
-      </div>
-      <div class="product-grid"></div>
-    </section>
-
-    <section id="videos" class="lp-section">
-      <div class="section-head">
-        <h2>影音紀實</h2>
-      </div>
-      <div class="video-list"></div>
-    </section>
-
-    <section id="faq" class="lp-section">
-      <div class="section-head">
-        <h2>常見問題</h2>
-      </div>
-      <div class="faq-list" id="faq-list"></div>
-    </section>
-  </div>
-  <a id="footer-cta" class="footer-cta" href="#">立刻行動</a>
-  <script src="app.js"></script>
+  </main>
+  {{template "footer" .}}
 </body>
-
-</html>
+</html>{{end}}

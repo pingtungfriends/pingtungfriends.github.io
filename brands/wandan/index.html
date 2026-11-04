@@ -1,94 +1,75 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>萬丹鄉農會</title>
-  <link rel="stylesheet" href="../../style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>萬丹鄉農會｜屏東好朋友</title>
+  <meta name="description" content="土地平闊，地質肥沃，水利充足，人民富裕">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&amp;family=Noto+Sans+TC:wght@300;400;500&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script src="../../app.js" defer></script>
 </head>
-
 <body data-page="brand">
-  <div class="page-bg"></div>
-  <div class="page-shell">
-    <header class="lp-nav">
-      <div class="logo">
-        <img id="brand-logo" src="../../public/assets/wandan/L6.jpg" alt="萬丹鄉農會" style="display:block; height: 32px; width: auto; object-fit: contain;">
-        <span id="brand-name-text" style="display:none;">萬丹鄉農會</span>
+  <main>
+    <div class="brand-layout">
+      <div class="brand-visual shutter" data-shutter>
+        <img class="brand-hero-photo" src="../../public/assets/wandan/H6.webp" alt="萬丹鄉農會的產地風景" fetchpriority="high">
+        <ul class="hero-words" aria-label="RICH   LAND   FARM "><li data-reveal>RICH </li><li data-reveal> LAND </li><li data-reveal> FARM</li></ul>
       </div>
-      <a class="btn-primary" href="../../index.html">返回列表</a>
-    </header>
+      <div class="brand-content">
+        <nav class="brand-nav" aria-label="品牌導覽"><a href="../../index.html#brand-wandan">← 品牌地圖</a><img src="../../public/assets/wandan/L6.jpg" alt="萬丹鄉農會標誌" height="40"></nav>
+        <section class="brand-intro" aria-labelledby="brand-title">
+          <h1 id="brand-title" data-reveal>萬丹鄉農會</h1>
+          <p class="brand-full-name" data-reveal>萬丹鄉農會</p>
+          <p class="brand-location" data-reveal>萬丹鄉 · 土地平闊，地質肥沃，水利充足，人民富裕</p>
+          <a class="button" href="#products" data-reveal>看產品</a>
+        </section>
+        <section class="brand-story" aria-labelledby="story-title">
+          <h2 id="story-title" data-reveal>品牌故事</h2>
+          <p data-reveal>萬丹鄉位於屏東平原南部，土地平闊，地質肥沃，水利充足，人民富裕，在本縣是生活水準頗高的地方，地形主要以平原為主，肥沃的土壤和豐沛的地下水源，使本鄉成為屏東縣境內的農產之鄉</p>
+        </section>
+        <section id="products" class="brand-products" aria-labelledby="products-title">
+          <h2 id="products-title" data-reveal>產品</h2>
+          <article class="brand-product">
+            <div class="product-photo" data-reveal><img src="../../public/assets/wandan/B_6_1.png" alt="紅豆豆奶" width="500" height="500" loading="lazy"></div>
+            <h3 data-reveal>紅豆豆奶</h3>
+            <p class="price" data-reveal>NT$38 · 300ml/罐</p>
+            <p data-reveal>嚴選台灣萬丹紅豆泥，非基改無添加，安全健康，風味濃郁純粹。</p>
 
-    <section class="lp-hero">
-      <div class="hero-bg" aria-hidden="true" style="background-image: url('../../public/assets/wandan/H6.webp');"></div>
-      <div class="hero-content">
-        <div class="hero-badges"></div>
-        <h1 class="hero-brand">萬丹鄉農會</h1>
-        <p class="hero-tagline">土地平闊，地質肥沃，水利充足，人民富裕</p>
-        <p class="hero-story">萬丹鄉位於屏東平原南部，土地平闊，地質肥沃，水利充足，人民富裕，在本縣是生活水準頗高的地方，地形主要以平原為主，肥沃的土壤和豐沛的地下水源，使本鄉成為屏東縣境內的農產之鄉</p>
-      </div>
-      <div class="hero-glass">
-        <div class="hero-big-text"><span>RICH </span><span> LAND </span><span> FARM</span></div>
-      </div>
-    </section>
+          </article><article class="brand-product">
+            <div class="product-photo" data-reveal><img src="../../public/assets/wandan/B_6_2.png" alt="黑米紅豆粥" width="500" height="500" loading="lazy"></div>
+            <h3 data-reveal>黑米紅豆粥</h3>
+            <p class="price" data-reveal>NT$38 · 250g/罐</p>
+            <p data-reveal>富膳食纖維與花青素及多種微量元素，紅豆黑米香濃甜綿，濃稠鬆軟，冰熱飲皆適宜。</p>
 
-    <section id="story" class="lp-section story-section">
-      <div class="section-head">
-        <h2>品牌故事</h2>
-        <p class="small">在地風土 · 共好加工 · 自然風味</p>
-      </div>
-      <div class="story-grid">
-        <p class="story-text">萬丹鄉位於屏東平原南部，土地平闊，地質肥沃，水利充足，人民富裕，在本縣是生活水準頗高的地方，地形主要以平原為主，肥沃的土壤和豐沛的地下水源，使本鄉成為屏東縣境內的農產之鄉</p>
-        <div class="story-card">
-          <img class="story-img" src="../../public/assets/wandan/H6.webp" alt="萬丹鄉農會" />
-          <div class="story-note">產地風景 / 品牌日常</div>
-        </div>
-      </div>
-    </section>
+          </article>
+        </section>
+        <section class="brand-videos" aria-labelledby="videos-title">
+          <h2 id="videos-title" data-reveal>影片</h2>
+          <figure class="video-item" data-reveal>
+            <div class="video-frame" data-video="nYNV0MAjHYo" data-video-title="2025屏東萬丹紅豆牛奶節！ 一起烙印紅豆餅同歡">
+              <img src="https://i.ytimg.com/vi/nYNV0MAjHYo/hqdefault.jpg" alt="2025屏東萬丹紅豆牛奶節！ 一起烙印紅豆餅同歡影片預覽" loading="lazy" width="480" height="360">
+              <a class="button video-play" href="https://youtu.be/nYNV0MAjHYo?si=2wAiZTTnbCZ6Obep" target="_blank" rel="noopener">播放影片</a>
+            </div>
+            <figcaption>2025屏東萬丹紅豆牛奶節！ 一起烙印紅豆餅同歡</figcaption>
+          </figure>
+        </section>
 
-    <section id="products" class="lp-section recipes-section">
-      <div class="section-head">
-        <h2>推薦產品</h2>
-      </div>
-      <div class="product-grid">
-					<div class="card">
-						<img src="../../public/assets/wandan/B_6_1.png" alt="紅豆豆奶" loading="lazy" />
-						<div class="card-body">
-							<h3>紅豆豆奶</h3>
-							<p class="summary">嚴選台灣萬丹紅豆泥，非基改無添加，安全健康，風味濃郁純粹。</p>
-							<p class="price">$38 · 300ml/罐</p>
-						</div>
-					</div>
-					<div class="card">
-						<img src="../../public/assets/wandan/B_6_2.png" alt="黑米紅豆粥" loading="lazy" />
-						<div class="card-body">
-							<h3>黑米紅豆粥</h3>
-							<p class="summary">富膳食纖維與花青素及多種微量元素，紅豆黑米香濃甜綿，濃稠鬆軟，冰熱飲皆適宜。</p>
-							<p class="price">$38 · 250g/罐</p>
-						</div>
-					</div></div>
-    </section>
 
-    <section id="videos" class="lp-section">
-      <div class="section-head">
-        <h2>影音紀實</h2>
       </div>
-      <div class="video-list">
-					<div class="video-item">
-						<div>2025屏東萬丹紅豆牛奶節！ 一起烙印紅豆餅同歡</div>
-						<a href="https://youtu.be/nYNV0MAjHYo?si=2wAiZTTnbCZ6Obep" target="_blank" rel="noopener">播放影片</a>
-					</div></div>
+    </div>
+    <section class="next-stop" aria-labelledby="next-title">
+      <h2 id="next-title" data-reveal>下一站：萬巒鄉</h2>
+      <p data-reveal>成德社區</p>
+      <a class="button" href="../chengde/index.html" data-reveal>認識成德社區</a>
     </section>
-
-    <section id="faq" class="lp-section">
-      <div class="section-head">
-        <h2>常見問題</h2>
-      </div>
-      <div class="faq-list" id="faq-list"></div>
-    </section>
-  </div>
-  <a id="footer-cta" class="footer-cta" href="#">立刻行動</a>
-  <script src="../../app.js"></script>
+  </main>
+  <footer class="photo-footer">
+  <img class="footer-photo" src="../../public/assets/pingtung/H7.jpg" alt="屏東縣農會的在地風景" width="1600" height="1000" loading="lazy">
+  <div class="footer-top"><nav aria-label="頁尾導覽"><a href="../../index.html#map">品牌地圖</a><a href="../../index.html#places">三種風土</a><a href="../../index.html#about">關於計畫</a></nav><p>屏東縣政府<br>農特產品牌計畫</p></div>
+  <div class="footer-bottom"><p class="footer-wordmark" data-reveal>屏東好朋友</p><p class="footer-legal">© 2025 屏東縣政府<span>屏東縣鄉鎮地圖改作自 <a href="https://commons.wikimedia.org/w/index.php?curid=90182335">&quot;Pingtung magistratical election map 2018&quot; by Ythlev</a>，<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>，via Wikimedia Commons</span></p></div>
+</footer>
 </body>
-
 </html>
