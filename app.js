@@ -1,8 +1,8 @@
 /**
  * Pingtung Friends (屏東農特產品牌官網)
  * 
- * This site uses a Hybrid Rendering approach.
- * Most content is statically generated (SSG) via `tools/convert.go`.
+ * This site is fully statically generated (Full SSG) via `tools/convert.go`.
+ * All content is baked into the HTML at build time; no client-side data fetching.
  * This file is reserved for future client-side interactions (e.g., mobile menu, animations).
  */
 
